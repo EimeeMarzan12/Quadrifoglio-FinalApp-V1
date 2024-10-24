@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:textColor="#CCCCCC"
+    android:background="@color/white"
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:id="@+id/nav_bar"
+        android:layout_width="match_parent"
+        android:layout_height="81sp"
+        android:layout_alignParentBottom="true">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.7sp"
+            android:background="#CCCCCC"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="80sp"/>
+
+        <RelativeLayout
+            android:id="@+id/block_dashboard"
+            android:layout_width="80sp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10sp"
+            android:padding="10sp">
+
+            <ImageView
+                android:id="@+id/block_dashboard_ic"
+                android:layout_width="53dp"
+                android:layout_height="43dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_home_bluef" />
+
+            <TextView
+                android:id="@+id/block_dashboard_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:textAlignment="center"
+                android:textColor="#5075E8"
+                android:textSize="12sp"
+                android:text="Dashboard"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/block_inventory"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10sp"
+            android:layout_toEndOf="@id/block_dashboard"
+            android:padding="10sp">
+
+            <ImageView
+                android:id="@+id/block_inventory_ic"
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:layout_marginTop="5sp"
+                android:src="@drawable/ic_inventory_grayo"
+                android:layout_centerHorizontal="true"/>
+
+            <TextView
+                android:id="@+id/block_inventory_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:text="Edit Inventory"
+                android:textAlignment="center"
+                style="@style/size12Text_gray"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/block_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="0sp"
+            android:layout_toEndOf="@id/block_inventory"
+            android:padding="10sp">
+
+            <ImageView
+                android:id="@+id/block_profile_ic"
+                android:layout_width="50sp"
+                android:layout_height="50sp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_profile_grayo"
+                />
+
+            <TextView
+                android:id="@+id/block_profile_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:text="User Profile"
+                android:textAlignment="center"
+                style="@style/size12Text_gray"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/block_scanQr"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/block_profile"
+            android:padding="10sp">
+
+            <TextView
+                android:id="@+id/block_scanQr_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:text="Log Inventory"
+                android:textAlignment="textStart"
+                style="@style/size12Text_gray"/>
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="80sp"
+        android:layout_height="80sp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="30sp"
+        android:background="@drawable/button_green"
+        android:elevation="5sp">
+
+        <ImageView
+            android:id="@+id/logInventory_btn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="0sp"
+            android:src="@drawable/ic_cam_icon"/>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/homeAction_bar"
+        android:layout_width="match_parent"
+        android:layout_height="60sp"
+        android:padding="10sp"
+        android:layout_alignParentTop="true">
+
+
+        <TextView
+            android:id="@+id/fragment_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Dashboard"
+            android:textSize="20sp"
+            android:textStyle="" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/fragment_body"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/homeAction_bar"
+        android:layout_above="@id/nav_bar">
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/main_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/search_bar"/>
+
+    </RelativeLayout>
+</RelativeLayout>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1436A1"
+    tools:context=".Login">
+
+    <RelativeLayout
+        android:id="@+id/logo_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/ic_queen"
+            android:layout_width="180sp"
+            android:layout_height="180sp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="70sp"
+            android:src="@drawable/img_1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-30sp"
+            android:layout_below="@id/ic_queen"
+            android:text="The Queen's Clinic"
+            android:textColor="@color/white"
+            android:fontFamily="serif"
+            android:textSize="20sp"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/credentialInput_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="40sp"
+        android:layout_marginHorizontal="50sp"
+        android:layout_below="@id/logo_group">
+        <RelativeLayout
+            android:id="@+id/username_bar"
+            android:layout_width="match_parent"
+            android:layout_height="50sp"
+            android:background="@drawable/rectangle_white">
+            <EditText
+                android:id="@+id/username_editText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:hint="Username"
+                android:textColor="@color/queenBlue"
+                android:textSize="22sp"
+                android:paddingHorizontal="10sp"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/password_bar"
+            android:layout_width="match_parent"
+            android:layout_height="50sp"
+            android:layout_below="@id/username_bar"
+            android:layout_marginTop="20sp"
+            android:background="@drawable/rectangle_white">
+            <EditText
+                android:id="@+id/password_editText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/rectangle_white"
+                android:hint="Password"
+                android:textColor="@color/queenBlue"
+                android:inputType="textPassword"
+                android:textSize="22sp"
+                android:paddingHorizontal="10sp"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+        <TextView
+            android:id="@+id/forgot_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/forgot"
+            android:textColor="@color/white"
+            android:layout_below="@id/password_bar"
+            android:layout_marginTop="8sp"/>
+
+            <Button
+                android:id="@+id/login_button"
+                android:layout_marginVertical="10sp"
+                android:layout_width="130sp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#FFFFFF"
+                android:text="Log In"
+                android:textColor="#1436A1"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"/>
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

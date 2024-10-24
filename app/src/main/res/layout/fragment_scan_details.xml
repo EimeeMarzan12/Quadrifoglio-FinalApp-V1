@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:textColor="#CCCCCC"
+    android:background="@color/white"
+
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="No Data Found"/>
+
+
+    <RelativeLayout
+            android:id="@+id/scanDetail"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="30sp"
+            android:padding="10sp">
+
+            <RelativeLayout
+                android:id="@+id/rescan_layout"
+                android:layout_width="100sp"
+                android:layout_height="80sp"
+                android:layout_marginLeft="20sp"
+                android:background="@drawable/rectangle_light_gray">
+
+                <ImageView
+                    android:layout_width="50sp"
+                    android:layout_height="50sp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_rescan_grayo" />
+            </RelativeLayout>
+
+            <TextView
+                style="@style/size14Text_DavysGray_bold"
+                android:layout_width="100sp"
+                android:layout_height="40sp"
+                android:layout_marginStart="20sp"
+                android:layout_below="@id/rescan_layout"
+                android:gravity="center"
+                android:text="Re-Scan" />
+
+            <RelativeLayout
+                android:id="@+id/selectEntries_layout"
+                android:layout_width="100sp"
+                android:layout_height="80sp"
+                android:layout_marginLeft="140sp"
+                android:background="@drawable/rectangle_light_gray">
+
+                <ImageView
+                    android:layout_width="50sp"
+                    android:layout_height="50sp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_copy_grayo" />
+            </RelativeLayout>
+
+            <TextView
+                style="@style/size14Text_DavysGray_bold"
+                android:layout_width="100sp"
+                android:layout_height="40sp"
+                android:layout_marginStart="140sp"
+                android:layout_below="@id/selectEntries_layout"
+                android:gravity="center"
+                android:text="Select Entries" />
+
+
+            <RelativeLayout
+                android:id="@+id/finishScan_layout"
+                android:layout_width="100sp"
+                android:layout_height="80sp"
+                android:background="@drawable/rectangle_msblue"
+                android:layout_marginLeft="260sp"
+
+                >
+                <ImageView
+                    android:layout_width="50sp"
+                    android:layout_height="50sp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_check_white" />
+            </RelativeLayout>
+
+            <TextView
+                style="@style/size14Text_DavysGray_bold"
+                android:layout_width="80sp"
+                android:layout_height="40sp"
+                android:layout_marginStart="270sp"
+                android:layout_below="@id/finishScan_layout"
+                android:gravity="center"
+                android:text="Finish Scan" />
+        </RelativeLayout>
+
+
+<!--    <RelativeLayout-->
+<!--        android:id="@+id/scanDetail1"-->
+<!--        android:layout_width="350sp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_marginLeft="20sp"-->
+<!--        android:layout_marginTop="230sp"-->
+<!--        android:padding="10sp"-->
+<!--        android:background="@drawable/rectangle_light_gray"-->
+<!--        >-->
+
+<!--        <TextView-->
+<!--            style="@style/size18Text_gray"-->
+<!--            android:layout_width="20sp"-->
+<!--            android:layout_height="40sp"-->
+<!--            android:layout_centerVertical="true"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:text="1." />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/scanDetail_qr1"-->
+<!--            android:layout_width="50sp"-->
+<!--            android:layout_height="50sp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:layout_marginStart="15sp"-->
+<!--            android:src="@drawable/ic_qr_grayo" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/scanDetail_code1"-->
+<!--            style="@style/size14Text_gray"-->
+<!--            android:layout_width="200sp"-->
+<!--            android:layout_height="40sp"-->
+<!--            android:layout_centerVertical="true"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:layout_marginStart="70sp"-->
+<!--            android:text="scanDetail_code1" />-->
+
+
+<!--        <ImageView-->
+<!--            android:id="@+id/scanDetail_trash1"-->
+<!--            android:layout_width="50sp"-->
+<!--            android:layout_height="50sp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:layout_marginStart="280sp"-->
+<!--            android:src="@drawable/ic_delete_grayo" />-->
+
+<!--    </RelativeLayout>-->
+
+<!--    <RelativeLayout-->
+<!--        android:id="@+id/scanDetail2"-->
+<!--        android:layout_width="350sp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_marginLeft="20sp"-->
+<!--        android:layout_marginTop="290sp"-->
+<!--        android:padding="10sp"-->
+<!--        android:background="@drawable/rectangle_light_gray"-->
+<!--        >-->
+<!--        <TextView-->
+<!--            style="@style/size18Text_gray"-->
+<!--            android:layout_width="20sp"-->
+<!--            android:layout_height="40sp"-->
+<!--            android:layout_centerVertical="true"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:text="2." />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/scanDetail_qr2"-->
+<!--            android:layout_width="50sp"-->
+<!--            android:layout_height="50sp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:layout_marginStart="15sp"-->
+<!--            android:src="@drawable/ic_qr_grayo" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/scanDetail_code2"-->
+<!--            style="@style/size14Text_gray"-->
+<!--            android:layout_width="200sp"-->
+<!--            android:layout_height="40sp"-->
+<!--            android:layout_centerVertical="true"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:layout_marginStart="70sp"-->
+<!--            android:text="scanDetail_code2" />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/scanDetail_trash2"-->
+<!--            android:layout_width="50sp"-->
+<!--            android:layout_height="50sp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:layout_marginStart="280sp"-->
+<!--            android:src="@drawable/ic_delete_grayo" />-->
+<!--    </RelativeLayout>-->
+
+<!--    <RelativeLayout-->
+<!--        android:id="@+id/scanDetail3"-->
+<!--        android:layout_width="350sp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_marginLeft="20sp"-->
+<!--        android:layout_marginTop="350sp"-->
+<!--        android:padding="10sp"-->
+<!--        android:background="@drawable/rectangle_light_gray"-->
+<!--        >-->
+<!--        <TextView-->
+<!--            style="@style/size18Text_gray"-->
+<!--            android:layout_width="20sp"-->
+<!--            android:layout_height="40sp"-->
+<!--            android:layout_centerVertical="true"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:text="3." />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/scanDetail_code3"-->
+<!--            style="@style/size14Text_gray"-->
+<!--            android:layout_width="200sp"-->
+<!--            android:layout_height="40sp"-->
+<!--            android:layout_centerVertical="true"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:layout_marginStart="70sp"-->
+<!--            android:text="scanDetail_code3" />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/scanDetail_qr3"-->
+<!--            android:layout_width="50sp"-->
+<!--            android:layout_height="50sp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:layout_marginStart="15sp"-->
+<!--            android:src="@drawable/ic_qr_grayo" />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/scanDetail_trash3"-->
+<!--            android:layout_width="50sp"-->
+<!--            android:layout_height="50sp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:layout_marginStart="280sp"-->
+<!--            android:src="@drawable/ic_delete_grayo" />-->
+
+<!--    </RelativeLayout>-->
+
+<!--    <RelativeLayout-->
+<!--        android:id="@+id/scanDetail4"-->
+<!--        android:layout_width="350sp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_marginLeft="20sp"-->
+<!--        android:layout_marginTop="410sp"-->
+<!--        android:padding="10sp"-->
+<!--        android:background="@drawable/rectangle_light_gray"-->
+<!--        >-->
+<!--        <TextView-->
+<!--            style="@style/size18Text_gray"-->
+<!--            android:layout_width="20sp"-->
+<!--            android:layout_height="40sp"-->
+<!--            android:layout_centerVertical="true"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:text="4." />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/scanDetail_qr4"-->
+<!--            android:layout_width="50sp"-->
+<!--            android:layout_height="50sp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:layout_marginStart="15sp"-->
+<!--            android:src="@drawable/ic_qr_grayo" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/scanDetail_code4"-->
+<!--            style="@style/size14Text_gray"-->
+<!--            android:layout_width="200sp"-->
+<!--            android:layout_height="40sp"-->
+<!--            android:layout_centerVertical="true"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:layout_marginStart="70sp"-->
+<!--            android:text="scanDetail_code4" />-->
+<!--        <ImageView-->
+<!--            android:id="@+id/scanDetail_trash4"-->
+<!--            android:layout_width="50sp"-->
+<!--            android:layout_height="50sp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:layout_marginStart="280sp"-->
+<!--            android:src="@drawable/ic_delete_grayo" />-->
+
+<!--    </RelativeLayout>-->
+
+<!--    <RelativeLayout-->
+<!--        android:id="@+id/scanDetail5"-->
+<!--        android:layout_width="350sp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_marginLeft="20sp"-->
+<!--        android:layout_marginTop="470sp"-->
+<!--        android:padding="10sp"-->
+<!--        android:background="@drawable/rectangle_light_gray"-->
+<!--        >-->
+<!--        <TextView-->
+<!--            style="@style/size18Text_gray"-->
+<!--            android:layout_width="20sp"-->
+<!--            android:layout_height="40sp"-->
+<!--            android:layout_centerVertical="true"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:text="5." />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/scanDetail_qr5"-->
+<!--            android:layout_width="50sp"-->
+<!--            android:layout_height="50sp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:layout_marginStart="15sp"-->
+<!--            android:src="@drawable/ic_qr_grayo" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/scanDetail_code5"-->
+<!--            style="@style/size14Text_gray"-->
+<!--            android:layout_width="200sp"-->
+<!--            android:layout_height="40sp"-->
+<!--            android:layout_centerVertical="true"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:layout_marginStart="70sp"-->
+<!--            android:text="scanDetail_code5" />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/scanDetail_trash5"-->
+<!--            android:layout_width="50sp"-->
+<!--            android:layout_height="50sp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:layout_marginStart="280sp"-->
+<!--            android:src="@drawable/ic_delete_grayo" />-->
+<!--    </RelativeLayout>-->
+
+<!--    <RelativeLayout-->
+<!--        android:id="@+id/scanDetail6"-->
+<!--        android:layout_width="350sp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_marginLeft="20sp"-->
+<!--        android:layout_marginTop="530sp"-->
+<!--        android:padding="10sp"-->
+<!--        android:background="@drawable/rectangle_light_gray"-->
+<!--        >-->
+<!--        <TextView-->
+<!--            style="@style/size18Text_gray"-->
+<!--            android:layout_width="20sp"-->
+<!--            android:layout_height="40sp"-->
+<!--            android:layout_centerVertical="true"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:text="6." />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/scanDetail_qr6"-->
+<!--            android:layout_width="50sp"-->
+<!--            android:layout_height="50sp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:layout_marginStart="15sp"-->
+<!--            android:src="@drawable/ic_qr_grayo" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/scanDetail_code6"-->
+<!--            style="@style/size14Text_gray"-->
+<!--            android:layout_width="200sp"-->
+<!--            android:layout_height="40sp"-->
+<!--            android:layout_centerVertical="true"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:layout_marginStart="70sp"-->
+<!--            android:text="scanDetail_code6" />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/scanDetail_trash6"-->
+<!--            android:layout_width="50sp"-->
+<!--            android:layout_height="50sp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:layout_marginStart="280sp"-->
+<!--            android:src="@drawable/ic_delete_grayo" />-->
+<!--    </RelativeLayout>-->
+
+<!--    <RelativeLayout-->
+<!--        android:id="@+id/scanDetail7"-->
+<!--        android:layout_width="350sp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_marginLeft="20sp"-->
+<!--        android:layout_marginTop="590sp"-->
+<!--        android:padding="10sp"-->
+<!--        android:background="@drawable/rectangle_light_gray"-->
+<!--        >-->
+<!--        <TextView-->
+<!--            style="@style/size18Text_gray"-->
+<!--            android:layout_width="20sp"-->
+<!--            android:layout_height="40sp"-->
+<!--            android:layout_centerVertical="true"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:text="7." />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/scanDetail_qr7"-->
+<!--            android:layout_width="50sp"-->
+<!--            android:layout_height="50sp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:layout_marginStart="15sp"-->
+<!--            android:src="@drawable/ic_qr_grayo" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/scanDetail_code7"-->
+<!--            style="@style/size14Text_gray"-->
+<!--            android:layout_width="200dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_centerVertical="true"-->
+<!--            android:layout_marginStart="70sp"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:text="scanDetail_code7" />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/scanDetail_trash7"-->
+<!--            android:layout_width="50sp"-->
+<!--            android:layout_height="50sp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:layout_marginStart="280sp"-->
+<!--            android:src="@drawable/ic_delete_grayo" />-->
+<!--    </RelativeLayout>-->
+
+</RelativeLayout>

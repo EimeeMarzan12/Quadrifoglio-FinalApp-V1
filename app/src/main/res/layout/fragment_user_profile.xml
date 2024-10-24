@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:textColor="#CCCCCC"
+    android:background="@color/white"
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:id="@+id/name_layout"
+        android:layout_width="match_parent"
+        android:layout_height="100sp"
+        android:paddingHorizontal="30sp"
+        android:paddingVertical="5sp"
+        android:layout_marginTop="20sp">
+
+        <ImageView
+            android:id="@+id/item_pic1"
+            android:layout_width="70sp"
+            android:layout_height="75sp"
+            android:layout_marginTop="-0sp"
+            android:src="@drawable/sample_user" />
+
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="300sp"
+            android:layout_height="40sp"
+            android:layout_marginStart="80sp"
+            android:text="Christian Paolo Reyes"
+            android:gravity="center_vertical"
+            style="@style/size18Text_DavysGray_bold"/>
+        <View
+            android:layout_width="200sp"
+            android:layout_marginStart="70sp"
+            android:layout_height="4sp"
+            android:layout_marginTop="40sp"
+            android:background="#c0c0c0" />
+
+        <TextView
+            android:id="@+id/user_age"
+            style="@style/size12Text_DavysGray"
+            android:layout_width="80sp"
+            android:layout_height="40sp"
+            android:layout_marginStart="70sp"
+            android:layout_marginTop="40sp"
+            android:gravity="center"
+            android:text="21" />
+
+        <TextView
+            style="@style/size18Text_DavysGray_bold"
+            android:layout_width="10sp"
+            android:layout_height="40sp"
+            android:layout_marginStart="150sp"
+            android:layout_marginTop="40sp"
+            android:gravity="center_vertical"
+            android:text="| " />
+
+        <TextView
+            android:id="@+id/your_branch"
+            style="@style/size12Text_DavysGray"
+            android:layout_width="80sp"
+            android:layout_height="40sp"
+            android:layout_marginStart="160sp"
+            android:layout_marginTop="40sp"
+            android:gravity="center"
+            android:text="Fairview" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/username_layout"
+        android:layout_width="match_parent"
+        android:layout_height="90sp"
+        android:layout_below="@id/name_layout"
+        android:paddingHorizontal="30sp"
+        android:paddingVertical="5sp">
+
+        <TextView
+            android:layout_width="100sp"
+            android:layout_height="40sp"
+            android:layout_marginStart="20sp"
+            android:text="User Name"
+            android:gravity="center_vertical"
+            style="@style/size14Text_DavysGray_bold"/>
+        <View
+            android:layout_width="300sp"
+            android:layout_marginStart="20sp"
+            android:layout_height="1sp"
+            android:layout_marginTop="35sp"
+            android:background="#c0c0c0" />
+
+        <TextView
+            android:id="@+id/user_username"
+            style="@style/size12Text_DavysGray"
+            android:layout_width="200sp"
+            android:layout_height="40sp"
+            android:layout_marginStart="40sp"
+            android:layout_marginTop="40sp"
+            android:gravity="center_vertical"
+            android:text="Christian Paolo Reyes" />
+
+        <RelativeLayout
+            android:id="@+id/edit_username"
+            android:layout_width="40sp"
+            android:layout_height="40sp"
+            android:layout_marginRight="10sp"
+            android:layout_marginStart="260sp"
+            android:layout_marginTop="40sp"
+            android:padding="10sp">
+
+            <ImageView
+                android:layout_width="50sp"
+                android:layout_height="50sp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_edit"
+                />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/password_layout"
+        android:layout_width="match_parent"
+        android:layout_height="90sp"
+        android:layout_below="@id/username_layout"
+        android:paddingHorizontal="30sp"
+        android:paddingVertical="5sp">
+
+        <TextView
+            android:layout_width="100sp"
+            android:layout_height="40sp"
+            android:layout_marginStart="20sp"
+            android:text="Password"
+            android:gravity="center_vertical"
+            style="@style/size14Text_DavysGray_bold"/>
+        <View
+            android:layout_width="300sp"
+            android:layout_marginStart="20sp"
+            android:layout_height="1sp"
+            android:layout_marginTop="35sp"
+            android:background="#c0c0c0" />
+
+        <TextView
+            android:id="@+id/user_password"
+            style="@style/size12Text_DavysGray"
+            android:layout_width="200sp"
+            android:layout_height="40sp"
+            android:layout_marginStart="40sp"
+            android:layout_marginTop="40sp"
+            android:gravity="center_vertical"
+            android:text="* * * * * * * *" />
+
+        <RelativeLayout
+            android:id="@+id/edit_password"
+            android:layout_width="40sp"
+            android:layout_height="40sp"
+            android:layout_marginRight="10sp"
+            android:layout_marginStart="260sp"
+            android:layout_marginTop="40sp"
+            android:padding="10sp">
+
+            <ImageView
+                android:layout_width="50sp"
+                android:layout_height="50sp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_edit"
+                />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/emailadd_layout"
+        android:layout_width="match_parent"
+        android:layout_height="90sp"
+        android:layout_below="@id/password_layout"
+        android:paddingHorizontal="30sp"
+        android:paddingVertical="5sp">
+
+        <TextView
+            android:layout_width="100sp"
+            android:layout_height="40sp"
+            android:layout_marginStart="20sp"
+            android:text="Email Address"
+            android:gravity="center_vertical"
+            style="@style/size14Text_DavysGray_bold"/>
+        <View
+            android:layout_width="300sp"
+            android:layout_marginStart="20sp"
+            android:layout_height="1sp"
+            android:layout_marginTop="35sp"
+            android:background="#c0c0c0" />
+
+        <TextView
+            android:id="@+id/user_emailadd"
+            style="@style/size12Text_DavysGray"
+            android:layout_width="150sp"
+            android:layout_height="40sp"
+            android:layout_marginStart="40sp"
+            android:layout_marginTop="40sp"
+            android:gravity="center_vertical"
+            android:text="cpaolo852@gmail.com" />
+
+        <RelativeLayout
+            android:id="@+id/edit_emailadd"
+            android:layout_width="40sp"
+            android:layout_height="40sp"
+            android:layout_marginRight="10sp"
+            android:layout_marginStart="260sp"
+            android:layout_marginTop="40sp"
+            android:padding="10sp">
+
+            <ImageView
+                android:layout_width="50sp"
+                android:layout_height="50sp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_edit"
+                />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/user_contactno_layout"
+        android:layout_width="match_parent"
+        android:layout_height="130sp"
+        android:layout_below="@id/emailadd_layout"
+        android:paddingHorizontal="30sp"
+        android:paddingVertical="5sp">
+
+        <TextView
+            android:layout_width="100sp"
+            android:layout_height="40sp"
+            android:layout_marginStart="20sp"
+            android:text="Contact No."
+            android:gravity="center_vertical"
+            style="@style/size14Text_DavysGray_bold"/>
+        <View
+            android:layout_width="300sp"
+            android:layout_marginStart="20sp"
+            android:layout_height="1sp"
+            android:layout_marginTop="35sp"
+            android:background="#c0c0c0" />
+
+        <TextView
+            android:id="@+id/user_contactno1"
+            style="@style/size12Text_DavysGray"
+            android:layout_width="150sp"
+            android:layout_height="40sp"
+            android:layout_marginStart="40sp"
+            android:layout_marginTop="40sp"
+            android:gravity="center_vertical"
+            android:text="09213509517" />
+
+        <RelativeLayout
+            android:id="@+id/edit_contactno1"
+            android:layout_width="40sp"
+            android:layout_height="40sp"
+            android:layout_marginRight="10sp"
+            android:layout_marginStart="260sp"
+            android:layout_marginTop="40sp"
+            android:padding="10sp">
+
+            <ImageView
+                android:layout_width="50sp"
+                android:layout_height="50sp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_edit"
+                />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/user_signout_layout"
+        android:layout_width="150sp"
+        android:layout_height="60sp"
+        android:layout_marginLeft="110sp"
+        android:layout_marginRight="110sp"
+        android:layout_marginBottom="20sp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/rectangle_light_gray"
+        android:clickable="true"
+        android:focusable="true"
+        >
+
+        <TextView
+            style="@style/size14Text_DavysGray_bold"
+            android:layout_width="60sp"
+            android:layout_height="40sp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="30sp"
+            android:gravity="center_vertical"
+            android:text="Sign out" />
+
+        <RelativeLayout
+            android:id="@+id/exit"
+            android:layout_width="50sp"
+            android:layout_height="50sp"
+            android:layout_marginStart="80sp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10sp"
+            android:padding="10sp">
+
+            <ImageView
+                android:layout_width="60sp"
+                android:layout_height="60sp"
+                android:src="@drawable/ic_exit" />
+
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

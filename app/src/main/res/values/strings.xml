@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">YOLOv8 TfLite</string>
+    <string name="forgot"><u>forgot password?</u></string>
+</resources>
