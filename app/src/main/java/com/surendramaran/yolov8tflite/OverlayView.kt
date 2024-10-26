@@ -5,7 +5,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
-import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -81,8 +80,8 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
     }
 
 
-    fun setResults(boundingBoxesModel1: List<BoundingBox>, boundingBoxesModel2: List<BoundingBox>) {
-        results = boundingBoxesModel1 + boundingBoxesModel2 // Combine the results from both models
+    fun setResults(boundingBoxesModel1: List<BoundingBox>) {
+        results = boundingBoxesModel1 // Combine the results from both models
         invalidate()
     }
 

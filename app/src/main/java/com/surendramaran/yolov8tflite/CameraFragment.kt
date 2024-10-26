@@ -1,5 +1,6 @@
 package com.surendramaran.yolov8tflite
 
+// Import statements
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -16,10 +17,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.surendramaran.yolov8tflite.Constants.LABELS_PATH
-import com.surendramaran.yolov8tflite.Constants.MODEL_PATH
-import com.surendramaran.yolov8tflite.Constants.LABELS2_PATH
-import com.surendramaran.yolov8tflite.Constants.MODEL2_PATH
 import com.surendramaran.yolov8tflite.databinding.FragmentCameraBinding
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -28,27 +25,24 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
-import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import com.surendramaran.yolov8tflite.Constants.LABELS_PATH
+import com.surendramaran.yolov8tflite.Constants.MODEL_PATH
 
 class CameraFragment : Fragment(), Detector.DetectorListener {
 
     private var _binding: FragmentCameraBinding? = null
     private val binding get() = _binding!!
     private val isFrontCamera = false
-    private lateinit var detector2: Detector
     private lateinit var detector: Detector
+    private lateinit var textRecognizer: com.google.mlkit.vision.text.TextRecognizer
 
     private var preview: Preview? = null
     private var imageAnalyzer: ImageAnalysis? = null
     private var camera: Camera? = null
     private var cameraProvider: ProcessCameraProvider? = null
     private lateinit var cameraExecutor: ExecutorService
-    private var boundingBoxesModel1: List<BoundingBox> = emptyList()
-    private var boundingBoxesModel2: List<BoundingBox> = emptyList()
-
-    // Initialize the text recognizer for OCR
-    private lateinit var textRecognizer: com.google.mlkit.vision.text.TextRecognizer
+    private var boundingBoxes: List<BoundingBox> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,17 +63,18 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
         // Initialize the text recognizer
         textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
-        // Set up detectors: One for model.tflite and one for model2.tflite
+        // Set up the detector with the model
         detector = Detector(requireContext(), MODEL_PATH, LABELS_PATH, this)
         detector.setup()
-
-        detector2 = Detector(requireContext(), MODEL2_PATH, LABELS2_PATH, this)
-        detector2.setup()
 
         if (allPermissionsGranted()) {
             startCamera()
         } else {
-            ActivityCompat.requestPermissions(requireActivity(), REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                REQUIRED_PERMISSIONS,
+                REQUEST_CODE_PERMISSIONS
+            )
         }
     }
 
@@ -114,7 +109,6 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
         imageAnalyzer?.setAnalyzer(cameraExecutor) { imageProxy ->
             val bitmapBuffer = Bitmap.createBitmap(imageProxy.width, imageProxy.height, Bitmap.Config.ARGB_8888)
             imageProxy.use { bitmapBuffer.copyPixelsFromBuffer(imageProxy.planes[0].buffer) }
-            imageProxy.close()
 
             val matrix = Matrix().apply {
                 postRotate(imageProxy.imageInfo.rotationDegrees.toFloat())
@@ -124,8 +118,9 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
             }
 
             val rotatedBitmap = Bitmap.createBitmap(bitmapBuffer, 0, 0, bitmapBuffer.width, bitmapBuffer.height, matrix, true)
-            detector.detect(rotatedBitmap, 1)  // Classification using model.tflite
-            detector2.detect(rotatedBitmap, 2)  // OCR using model2.tflite
+            detector.detect(rotatedBitmap)
+
+            imageProxy.close()
         }
 
         cameraProvider.unbindAll()
@@ -143,7 +138,9 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
     }
 
     private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-        if (it[Manifest.permission.CAMERA] == true) { startCamera() }
+        if (it[Manifest.permission.CAMERA] == true) {
+            startCamera()
+        }
     }
 
     override fun onDestroyView() {
@@ -173,64 +170,83 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
     }
 
     override fun onDetect(boundingBoxes: List<BoundingBox>, inferenceTime: Long) {
-        boundingBoxesModel1 = boundingBoxes // Store results for model 1 (Classification)
+        this.boundingBoxes = boundingBoxes
 
         requireActivity().runOnUiThread {
             binding.inferenceTime.text = "${inferenceTime}ms"
-            binding.overlay.setResults(boundingBoxesModel1, boundingBoxesModel2) // Pass both sets of results
+            binding.overlay.setResults(boundingBoxes) // Display results
             binding.overlay.invalidate()
 
-            // Display the classification result from `model.tflite`
-            for (box in boundingBoxes) {
-                Log.d(TAG, "Classification Result: ${box.clsName}")
-            }
-        }
-    }
-
-    override fun onDetect2(boundingBoxes: List<BoundingBox>, inferenceTime: Long) {
-        boundingBoxesModel2 = boundingBoxes // Store results for model 2 (OCR)
-
-        requireActivity().runOnUiThread {
-            binding.inferenceTime.text = "${inferenceTime}ms for Model 2"
-            binding.overlay.setResults(boundingBoxesModel1, boundingBoxesModel2) // Pass both sets of results
-            binding.overlay.invalidate()
-
-            // For each bounding box, crop the region and run OCR for expiration date and quantity
+            // Process each bounding box for OCR if needed
             binding.viewFinder.bitmap?.let { bitmap ->
                 for (box in boundingBoxes) {
-                    val croppedBitmap = cropBitmap(bitmap, box) // Crop using detected box
-                    runOCR(croppedBitmap) // Run OCR on the cropped region
+                    val croppedBitmap = cropBitmap(bitmap, box)
+                    runOCR(croppedBitmap)
                 }
             } ?: Log.e(TAG, "Bitmap is null, skipping OCR")
         }
     }
 
-    // Function to crop bitmap using detected bounding box
     private fun cropBitmap(bitmap: Bitmap, box: BoundingBox): Bitmap {
-        val left = box.left.toInt()
-        val top = box.top.toInt()
-        val width = box.width.toInt()
-        val height = box.height.toInt()
+        val left = box.left.coerceIn(0f, bitmap.width.toFloat()).toInt()
+        val top = box.top.coerceIn(0f, bitmap.height.toFloat()).toInt()
+        val width = box.width.coerceIn(0f, (bitmap.width - left).toFloat()).toInt()
+        val height = box.height.coerceIn(0f, (bitmap.height - top).toFloat()).toInt()
 
-        // Validate dimensions before cropping
-        if (width <= 0 || height <= 0) {
-            Log.e(TAG, "Invalid bounding box dimensions")
-            return bitmap // Return the original bitmap in case of invalid dimensions
+        return if (width > 0 && height > 0) {
+            Bitmap.createBitmap(bitmap, left, top, width, height)
+        } else {
+            bitmap
         }
-        return Bitmap.createBitmap(bitmap, left, top, width, height)
     }
 
-    // Function to run OCR on cropped bitmap
     private fun runOCR(croppedBitmap: Bitmap) {
         val image = InputImage.fromBitmap(croppedBitmap, 0)
         textRecognizer.process(image)
             .addOnSuccessListener { visionText ->
+                val detectedQuantities = mutableListOf<String>()
+                val detectedExpiryDates = mutableListOf<String>()
+
                 for (block in visionText.textBlocks) {
                     Log.d("OCR", "Detected text: ${block.text}")
+
+                    // Extract quantities using regex
+                    val quantities = extractQuantities(block.text)
+                    detectedQuantities.addAll(quantities)
+
+                    // Extract expiration dates using regex
+                    val expiryDates = extractExpiryDates(block.text)
+                    detectedExpiryDates.addAll(expiryDates)
+                }
+
+                // Update the UI with detected quantities
+                binding.qty.text = if (detectedQuantities.isNotEmpty()) {
+                    "Qty: ${detectedQuantities.firstOrNull()}"
+                } else {
+                    "Qty not detected"
+                }
+
+                // Update UI with detected expiry dates
+                binding.expiryDate.text = if (detectedExpiryDates.isNotEmpty()) {
+                    "Expiry Date: ${detectedExpiryDates.firstOrNull()}"
+                } else {
+                    "Expiry Date not detected"
                 }
             }
             .addOnFailureListener { e ->
                 Log.e("OCR", "OCR failed: ${e.message}")
             }
+    }
+
+    private fun extractQuantities(text: String): List<String> {
+        val regex = Regex("\\b\\d+[\\s]*(ML|ml|TABLETS|Tablet|TB|tb)\\b")
+        return regex.findAll(text).map { it.value }.toList()
+    }
+
+    private fun extractExpiryDates(text: String): List<String> {
+        val dateRegex = Regex(
+            "\\b(\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4}|\\d{4}[/-]\\d{1,2}[/-]\\d{1,2}|\\d{1,2}/\\d{4}|\\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|DEC)[a-z]*[ ]?\\d{4}\\b)\\b"
+        )
+        return dateRegex.findAll(text).map { it.value }.toList()
     }
 }

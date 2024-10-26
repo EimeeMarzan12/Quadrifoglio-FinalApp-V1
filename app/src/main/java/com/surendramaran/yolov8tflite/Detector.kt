@@ -31,17 +31,14 @@ class Detector(
     private var numChannel = 0
     private var numElements = 0
 
-    // ImageProcessor to preprocess the image before passing it to the model
     private val imageProcessor = ImageProcessor.Builder()
         .add(NormalizeOp(INPUT_MEAN, INPUT_STANDARD_DEVIATION))
         .add(CastOp(INPUT_IMAGE_TYPE))
         .build()
 
-    // Setup the model and load labels
     fun setup() {
         val model = FileUtil.loadMappedFile(context, modelPath)
-        val options = Interpreter.Options()
-        options.numThreads = 4
+        val options = Interpreter.Options().apply { numThreads = 4 }
         interpreter = Interpreter(model, options)
 
         val inputShape = interpreter?.getInputTensor(0)?.shape() ?: return
@@ -52,39 +49,26 @@ class Detector(
         numChannel = outputShape[1]
         numElements = outputShape[2]
 
-        // Load labels from the label file
         try {
             val inputStream: InputStream = context.assets.open(labelPath)
             val reader = BufferedReader(InputStreamReader(inputStream))
-
-            var line: String? = reader.readLine()
-            while (line != null && line != "") {
-                labels.add(line)
-                line = reader.readLine()
-            }
-
-            reader.close()
-            inputStream.close()
+            reader.useLines { lines -> lines.forEach { labels.add(it) } }
         } catch (e: IOException) {
             e.printStackTrace()
         }
     }
 
-    // Clear the interpreter when no longer needed
     fun clear() {
         interpreter?.close()
         interpreter = null
     }
 
-    // Main detection function
-    fun detect(frame: Bitmap, modelIdentifier: Int) {
-
+    fun detect(frame: Bitmap) {
         interpreter ?: return
         if (tensorWidth == 0 || tensorHeight == 0 || numChannel == 0 || numElements == 0) return
 
         var inferenceTime = SystemClock.uptimeMillis()
 
-        // Preprocess the image to the required input size
         val resizedBitmap = Bitmap.createScaledBitmap(frame, tensorWidth, tensorHeight, false)
 
         val tensorImage = TensorImage(DataType.FLOAT32)
@@ -92,33 +76,22 @@ class Detector(
         val processedImage = imageProcessor.process(tensorImage)
         val imageBuffer = processedImage.buffer
 
-        // Prepare the output buffer
-        val output = TensorBuffer.createFixedSize(intArrayOf(1 , numChannel, numElements), OUTPUT_IMAGE_TYPE)
+        val output = TensorBuffer.createFixedSize(intArrayOf(1, numChannel, numElements), OUTPUT_IMAGE_TYPE)
         interpreter?.run(imageBuffer, output.buffer)
 
-        // Post-process the results to extract the best bounding boxes
         val bestBoxes = bestBox(output.floatArray)
         inferenceTime = SystemClock.uptimeMillis() - inferenceTime
 
-        // Handle empty detection case
         if (bestBoxes == null) {
             detectorListener.onEmptyDetect()
-            return
-        }
-
-        // Determine which model's results to return based on the identifier
-        if (modelIdentifier == 1) {
-            detectorListener.onDetect(bestBoxes, inferenceTime) // Callback for Model 1
         } else {
-            detectorListener.onDetect2(bestBoxes, inferenceTime) // Callback for Model 2
+            detectorListener.onDetect(bestBoxes, inferenceTime)
         }
     }
 
-    // Post-processing: Extract best bounding boxes from the model output
     private fun bestBox(array: FloatArray): List<BoundingBox>? {
         val boundingBoxes = mutableListOf<BoundingBox>()
 
-        // Loop over the elements and find the best bounding boxes
         for (c in 0 until numElements) {
             var maxConf = -1.0f
             var maxIdx = -1
@@ -133,9 +106,8 @@ class Detector(
                 arrayIdx += numElements
             }
 
-            // Check for confidence threshold
             if (maxConf > CONFIDENCE_THRESHOLD) {
-                val clsName = labels[maxIdx]
+                val clsName = labels.getOrNull(maxIdx) ?: continue
                 val cx = array[c]
                 val cy = array[c + numElements]
                 val w = array[c + numElements * 2]
@@ -145,17 +117,13 @@ class Detector(
                 val x2 = cx + (w / 2F)
                 val y2 = cy + (h / 2F)
 
-                // Ignore invalid bounding boxes
-                if (x1 < 0F || x1 > 1F) continue
-                if (y1 < 0F || y1 > 1F) continue
-                if (x2 < 0F || x2 > 1F) continue
-                if (y2 < 0F || y2 > 1F) continue
+                if (x1 < 0F || x1 > 1F || y1 < 0F || y1 > 1F || x2 < 0F || x2 > 1F || y2 < 0F || y2 > 1F) continue
 
                 boundingBoxes.add(
                     BoundingBox(
                         x1 = x1, y1 = y1, x2 = x2, y2 = y2,
                         cx = cx, cy = cy, w = w, h = h,
-                        left = x1, top = y1, width = x2 - x1, height = y2 - y1,  // Calculate left, top, width, and height
+                        left = x1, top = y1, width = x2 - x1, height = y2 - y1,
                         cnf = maxConf, cls = maxIdx, clsName = clsName
                     )
                 )
@@ -163,12 +131,9 @@ class Detector(
         }
 
         if (boundingBoxes.isEmpty()) return null
-
-        // Apply Non-Max Suppression (NMS) to filter overlapping boxes
         return applyNMS(boundingBoxes)
     }
 
-    // Non-Max Suppression to remove overlapping bounding boxes
     private fun applyNMS(boxes: List<BoundingBox>): MutableList<BoundingBox> {
         val sortedBoxes = boxes.sortedByDescending { it.cnf }.toMutableList()
         val selectedBoxes = mutableListOf<BoundingBox>()
@@ -191,7 +156,6 @@ class Detector(
         return selectedBoxes
     }
 
-    // Calculate Intersection over Union (IoU) between two bounding boxes
     private fun calculateIoU(box1: BoundingBox, box2: BoundingBox): Float {
         val x1 = maxOf(box1.x1, box2.x1)
         val y1 = maxOf(box1.y1, box2.y1)
@@ -203,11 +167,9 @@ class Detector(
         return intersectionArea / (box1Area + box2Area - intersectionArea)
     }
 
-    // Callback interface for detection results
     interface DetectorListener {
         fun onEmptyDetect()
-        fun onDetect(boundingBoxes: List<BoundingBox>, inferenceTime: Long) // For Model 1
-        fun onDetect2(boundingBoxes: List<BoundingBox>, inferenceTime: Long) // For Model 2
+        fun onDetect(boundingBoxes: List<BoundingBox>, inferenceTime: Long)
     }
 
     companion object {
