@@ -1,0 +1,11 @@
+<fragment android:id="@+id/editInventoryFragment"
+    android:name="com.surendramaran.yolov8tflite.EditInventoryFragment"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <argument
+        android:name="quantity"
+        app:argType="string" />
+    <argument
+        android:name="expiry"
+        app:argType="string" />
+</fragment>

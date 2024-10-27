@@ -14,9 +14,11 @@ public class InventoryViewModel extends ViewModel {
 
     public void addItem(EditInventoryFragment.Item item) {
         List<EditInventoryFragment.Item> currentItems = items.getValue();
-        if (currentItems != null) {
-            currentItems.add(item);
-            items.setValue(currentItems);
+        if (currentItems == null) {
+            currentItems = new ArrayList<>(); // Initialize if null
         }
+        currentItems.add(item);
+        items.setValue(currentItems);
     }
+
 }

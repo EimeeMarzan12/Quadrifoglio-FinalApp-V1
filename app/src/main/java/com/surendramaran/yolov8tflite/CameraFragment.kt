@@ -23,6 +23,7 @@ import java.util.concurrent.Executors
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
@@ -32,7 +33,7 @@ import com.surendramaran.yolov8tflite.Constants.MODEL_PATH
 class CameraFragment : Fragment(), Detector.DetectorListener {
 
     private var _binding: FragmentCameraBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding!! // Ensure binding is not null
     private val isFrontCamera = false
     private lateinit var detector: Detector
     private lateinit var textRecognizer: com.google.mlkit.vision.text.TextRecognizer
@@ -147,7 +148,7 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
         super.onDestroyView()
         detector.clear()
         cameraExecutor.shutdown()
-        _binding = null
+        _binding = null // Prevent memory leaks
     }
 
     override fun onResume() {
@@ -177,15 +178,19 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
             binding.overlay.setResults(boundingBoxes) // Display results
             binding.overlay.invalidate()
 
-            // Process each bounding box for OCR if needed
-            binding.viewFinder.bitmap?.let { bitmap ->
+            // Ensure bitmap is not null before proceeding
+            val bitmap = binding.viewFinder.bitmap
+            if (bitmap != null) {
                 for (box in boundingBoxes) {
                     val croppedBitmap = cropBitmap(bitmap, box)
                     runOCR(croppedBitmap)
                 }
-            } ?: Log.e(TAG, "Bitmap is null, skipping OCR")
+            } else {
+                Log.e(TAG, "Bitmap is null, skipping OCR")
+            }
         }
     }
+
 
     private fun cropBitmap(bitmap: Bitmap, box: BoundingBox): Bitmap {
         val left = box.left.coerceIn(0f, bitmap.width.toFloat()).toInt()
@@ -210,13 +215,9 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
                 for (block in visionText.textBlocks) {
                     Log.d("OCR", "Detected text: ${block.text}")
 
-                    // Extract quantities using regex
-                    val quantities = extractQuantities(block.text)
-                    detectedQuantities.addAll(quantities)
-
-                    // Extract expiration dates using regex
-                    val expiryDates = extractExpiryDates(block.text)
-                    detectedExpiryDates.addAll(expiryDates)
+                    // Extract quantities and expiry dates as before
+                    detectedQuantities.addAll(extractQuantities(block.text))
+                    detectedExpiryDates.addAll(extractExpiryDates(block.text))
                 }
 
                 // Update the UI with detected quantities
@@ -232,6 +233,22 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
                 } else {
                     "Expiry Date not detected"
                 }
+
+                // Pass values to EditInventoryFragment when complete preview button is pressed
+                binding.stopButton.setOnClickListener {
+                    val bundle = Bundle().apply {
+                        putString("quantity", detectedQuantities.firstOrNull())
+                        putString("expiry", detectedExpiryDates.firstOrNull())
+                    }
+                    val editInventoryFragment = EditInventoryFragment()
+                    editInventoryFragment.arguments = bundle
+
+                    // Navigate to EditInventoryFragment
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_fragment, editInventoryFragment) //
+                        .addToBackStack(null)
+                        .commit()
+                }
             }
             .addOnFailureListener { e ->
                 Log.e("OCR", "OCR failed: ${e.message}")
@@ -244,9 +261,7 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
     }
 
     private fun extractExpiryDates(text: String): List<String> {
-        val dateRegex = Regex(
-            "\\b(\\d{1,2}[/-]\\d{1,2}[/-]\\d{2,4}|\\d{4}[/-]\\d{1,2}[/-]\\d{1,2}|\\d{1,2}/\\d{4}|\\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|DEC)[a-z]*[ ]?\\d{4}\\b)\\b"
-        )
-        return dateRegex.findAll(text).map { it.value }.toList()
+        val regex = Regex("\\b\\w{3}\\s\\d{4}\\b") // e.g., "DEC 2027"
+        return regex.findAll(text).map { it.value }.toList()
     }
 }
