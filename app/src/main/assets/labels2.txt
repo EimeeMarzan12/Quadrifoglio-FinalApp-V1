@@ -1,2 +1,0 @@
-Expiry_Date
-Qty

@@ -3,5 +3,4 @@ Biogesic
 Decolgen
 Dolan
 Enervon
-Expiry_Date
-Qty
+

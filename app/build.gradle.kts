@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.surendramaran.yolov8tflite"
-        minSdk = 21
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"

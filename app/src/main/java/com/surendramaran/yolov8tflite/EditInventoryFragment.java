@@ -38,12 +38,14 @@ public class EditInventoryFragment extends Fragment {
 
         // Check for arguments and handle nulls
         if (getArguments() != null) {
+            String itemName = getArguments().getString("itemName"); // Retrieve clsName
             String quantity = getArguments().getString("quantity");
             String expiry = getArguments().getString("expiry");
 
-            if (quantity != null && !quantity.isEmpty() && expiry != null && !expiry.isEmpty()) {
-                Log.d(TAG, "Detected item: Quantity = " + quantity + ", Expiry = " + expiry);
-                Item detectedItem = new Item("Detected Item", quantity, expiry);
+            if (itemName != null && !itemName.isEmpty() && quantity != null && !quantity.isEmpty() && expiry != null && !expiry.isEmpty()) {
+                Log.d(TAG, "Detected item: Name = " + itemName + ", Quantity = " + quantity + ", Expiry = " + expiry);
+                Item detectedItem = new Item(itemName, quantity, expiry); // Use clsName as item name
+                itemList.add(detectedItem);
                 itemList.add(detectedItem);
                 addItemView(detectedItem);
                 viewModel.addItem(detectedItem);

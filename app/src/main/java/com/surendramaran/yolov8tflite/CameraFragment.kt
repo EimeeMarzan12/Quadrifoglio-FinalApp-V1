@@ -4,6 +4,7 @@ package com.surendramaran.yolov8tflite
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.Matrix
 import android.os.Bundle
 import android.util.Log
@@ -23,12 +24,13 @@ import java.util.concurrent.Executors
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.surendramaran.yolov8tflite.Constants.LABELS_PATH
 import com.surendramaran.yolov8tflite.Constants.MODEL_PATH
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class CameraFragment : Fragment(), Detector.DetectorListener {
 
@@ -183,7 +185,8 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
             if (bitmap != null) {
                 for (box in boundingBoxes) {
                     val croppedBitmap = cropBitmap(bitmap, box)
-                    runOCR(croppedBitmap)
+                    runOCR(croppedBitmap, box.clsName) // Pass clsName to runOCR
+
                 }
             } else {
                 Log.e(TAG, "Bitmap is null, skipping OCR")
@@ -205,7 +208,7 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
         }
     }
 
-    private fun runOCR(croppedBitmap: Bitmap) {
+    private fun runOCR(croppedBitmap: Bitmap, clsName: String) {
         val image = InputImage.fromBitmap(croppedBitmap, 0)
         textRecognizer.process(image)
             .addOnSuccessListener { visionText ->
@@ -237,6 +240,7 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
                 // Pass values to EditInventoryFragment when complete preview button is pressed
                 binding.stopButton.setOnClickListener {
                     val bundle = Bundle().apply {
+                        putString("itemName", clsName) // Pass clsName to EditInventoryFragment
                         putString("quantity", detectedQuantities.firstOrNull())
                         putString("expiry", detectedExpiryDates.firstOrNull())
                     }
@@ -264,4 +268,16 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
         val regex = Regex("\\b\\w{3}\\s\\d{4}\\b") // e.g., "DEC 2027"
         return regex.findAll(text).map { it.value }.toList()
     }
+
+    private fun getBoxColor(expiryDate: String): Int {
+        val currentDate = LocalDate.now()
+        val parsedExpiryDate = LocalDate.parse(expiryDate, DateTimeFormatter.ofPattern("MMM yyyy"))
+
+        return when {
+            parsedExpiryDate.isBefore(currentDate) -> Color.RED // Expired
+            parsedExpiryDate.isBefore(currentDate.plusMonths(6)) -> Color.YELLOW // Near expiry
+            else -> Color.GREEN // Safe expiry
+        }
+    }
+
 }
