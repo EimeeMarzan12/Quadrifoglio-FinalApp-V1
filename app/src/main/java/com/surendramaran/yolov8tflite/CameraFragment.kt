@@ -31,6 +31,9 @@ import com.surendramaran.yolov8tflite.Constants.LABELS_PATH
 import com.surendramaran.yolov8tflite.Constants.MODEL_PATH
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
+import java.util.Calendar
+import java.util.Locale
 
 class CameraFragment : Fragment(), Detector.DetectorListener {
 
@@ -90,7 +93,8 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
     }
 
     private fun bindCameraUseCases() {
-        val cameraProvider = cameraProvider ?: throw IllegalStateException("Camera initialization failed.")
+        val cameraProvider =
+            cameraProvider ?: throw IllegalStateException("Camera initialization failed.")
         val rotation = binding.viewFinder.display.rotation
 
         val cameraSelector = CameraSelector.Builder()
@@ -110,7 +114,8 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
             .build()
 
         imageAnalyzer?.setAnalyzer(cameraExecutor) { imageProxy ->
-            val bitmapBuffer = Bitmap.createBitmap(imageProxy.width, imageProxy.height, Bitmap.Config.ARGB_8888)
+            val bitmapBuffer =
+                Bitmap.createBitmap(imageProxy.width, imageProxy.height, Bitmap.Config.ARGB_8888)
             imageProxy.use { bitmapBuffer.copyPixelsFromBuffer(imageProxy.planes[0].buffer) }
 
             val matrix = Matrix().apply {
@@ -120,7 +125,15 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
                 }
             }
 
-            val rotatedBitmap = Bitmap.createBitmap(bitmapBuffer, 0, 0, bitmapBuffer.width, bitmapBuffer.height, matrix, true)
+            val rotatedBitmap = Bitmap.createBitmap(
+                bitmapBuffer,
+                0,
+                0,
+                bitmapBuffer.width,
+                bitmapBuffer.height,
+                matrix,
+                true
+            )
             detector.detect(rotatedBitmap)
 
             imageProxy.close()
@@ -140,11 +153,12 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
         ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
     }
 
-    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-        if (it[Manifest.permission.CAMERA] == true) {
-            startCamera()
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            if (it[Manifest.permission.CAMERA] == true) {
+                startCamera()
+            }
         }
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -180,13 +194,17 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
             binding.overlay.setResults(boundingBoxes) // Display results
             binding.overlay.invalidate()
 
-            // Ensure bitmap is not null before proceeding
             val bitmap = binding.viewFinder.bitmap
             if (bitmap != null) {
                 for (box in boundingBoxes) {
                     val croppedBitmap = cropBitmap(bitmap, box)
-                    runOCR(croppedBitmap, box.clsName) // Pass clsName to runOCR
-
+                    runOCR(croppedBitmap, box.clsName) { expiryDate ->
+                        Log.d("CameraFragment", "Detected expiry date: $expiryDate")
+                        // Call getBoxColor with the extracted expiry date
+                        val boxColor = getBoxColor(expiryDate)
+                        box.color = boxColor // Assuming BoundingBox has a color property
+                        binding.overlay.invalidate() // Refresh the overlay to show updated colors
+                    }
                 }
             } else {
                 Log.e(TAG, "Bitmap is null, skipping OCR")
@@ -208,12 +226,16 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
         }
     }
 
-    private fun runOCR(croppedBitmap: Bitmap, clsName: String) {
+    private fun runOCR(
+        croppedBitmap: Bitmap,
+        clsName: String,
+        onExpiryDateDetected: (String) -> Unit
+    ) {
         val image = InputImage.fromBitmap(croppedBitmap, 0)
         textRecognizer.process(image)
             .addOnSuccessListener { visionText ->
-                val detectedQuantities = mutableListOf<String>()
                 val detectedExpiryDates = mutableListOf<String>()
+                val detectedQuantities = mutableListOf<String>()
 
                 for (block in visionText.textBlocks) {
                     Log.d("OCR", "Detected text: ${block.text}")
@@ -231,11 +253,21 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
                 }
 
                 // Update UI with detected expiry dates
-                binding.expiryDate.text = if (detectedExpiryDates.isNotEmpty()) {
-                    "Expiry Date: ${detectedExpiryDates.firstOrNull()}"
+                val expiryDateText = if (detectedExpiryDates.isNotEmpty()) {
+                    detectedExpiryDates.firstOrNull() ?: "Expiry Date not detected"
                 } else {
                     "Expiry Date not detected"
                 }
+                binding.expiryDate.text = "Expiry Date: $expiryDateText"
+
+                // Call getBoxColor with the extracted expiry date
+                val boxColor = getBoxColor(expiryDateText) // Pass the expiry date
+                // Here you may want to set the box color to the bounding boxes if applicable
+                // Assuming you want to apply this to each bounding box
+                boundingBoxes.forEach { box ->
+                    box.color = boxColor // Set the color based on the expiry date
+                }
+                binding.overlay.invalidate() // Refresh the overlay to show updated colors
 
                 // Pass values to EditInventoryFragment when complete preview button is pressed
                 binding.stopButton.setOnClickListener {
@@ -259,6 +291,7 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
             }
     }
 
+
     private fun extractQuantities(text: String): List<String> {
         val regex = Regex("\\b\\d+[\\s]*(ML|ml|TABLETS|Tablet|TB|tb)\\b")
         return regex.findAll(text).map { it.value }.toList()
@@ -269,15 +302,78 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
         return regex.findAll(text).map { it.value }.toList()
     }
 
-    private fun getBoxColor(expiryDate: String): Int {
-        val currentDate = LocalDate.now()
-        val parsedExpiryDate = LocalDate.parse(expiryDate, DateTimeFormatter.ofPattern("MMM yyyy"))
+    private fun getBoxColor(expiryText: String): Int {
+        // Sanitize the expiry text
+        val sanitizedText = expiryText.replace("\n", "").trim().replace(Regex("\\s+"), " ")
 
-        return when {
-            parsedExpiryDate.isBefore(currentDate) -> Color.RED // Expired
-            parsedExpiryDate.isBefore(currentDate.plusMonths(6)) -> Color.YELLOW // Near expiry
-            else -> Color.GREEN // Safe expiry
+        // Log the sanitized text
+        Log.d("CameraFragment", "Sanitized expiry text: '$sanitizedText'")
+
+        return try {
+            // Try parsing using DateTimeFormatter
+            val formatter = DateTimeFormatter.ofPattern("MMM yyyy", Locale.US)
+            val expiryDate = LocalDate.parse(sanitizedText, formatter)
+            val currentDate = LocalDate.now()
+
+            when {
+                expiryDate.isBefore(currentDate) -> Color.RED // Expired
+                expiryDate.isBefore(currentDate.plusMonths(6)) -> Color.YELLOW // Near expiry (3-6 months)
+                else -> Color.GREEN // Not expired (6+ months)
+            }
+        } catch (e: DateTimeParseException) {
+            // Log the error
+            Log.e("CameraFragment", "Failed to parse date using DateTimeFormatter: '$sanitizedText'", e)
+
+            // Try manual parsing using getMonthIndex
+            val parts = sanitizedText.split(" ")
+            if (parts.size == 2) {
+                val month = parts[0]
+                val year = parts[1].toIntOrNull()
+
+                // Get the month index
+                val monthIndex = getMonthIndex(month)
+                if (monthIndex != -1 && year != null) {
+                    // Create the LocalDate using the month index and year
+                    val expiryDate = LocalDate.of(year, monthIndex + 1, 1) // Use the first day of the month
+                    val currentDate = LocalDate.now()
+
+                    when {
+                        expiryDate.isBefore(currentDate) -> Color.RED // Expired
+                        expiryDate.isBefore(currentDate.plusMonths(6)) -> Color.YELLOW // Near expiry (3-6 months)
+                        else -> Color.GREEN // Not expired (6+ months)
+                    }
+                } else {
+                    // Log and return a default color if parsing fails
+                    Log.e("CameraFragment", "Invalid month/year format: '$sanitizedText'")
+                    Color.GRAY // Default color for unknown expiry
+                }
+            } else {
+                // Log and return a default color if parts don't match expected format
+                Log.e("CameraFragment", "Unexpected format for expiry date: '$sanitizedText'")
+                Color.GRAY // Default color for unknown expiry
+            }
         }
     }
+
+    private fun getMonthIndex(month: String): Int {
+        return when (month.toUpperCase()) {
+            "JAN" -> Calendar.JANUARY
+            "FEB" -> Calendar.FEBRUARY
+            "MAR" -> Calendar.MARCH
+            "APR" -> Calendar.APRIL
+            "MAY" -> Calendar.MAY
+            "JUN" -> Calendar.JUNE
+            "JUL" -> Calendar.JULY
+            "AUG" -> Calendar.AUGUST
+            "SEP" -> Calendar.SEPTEMBER
+            "OCT" -> Calendar.OCTOBER
+            "NOV" -> Calendar.NOVEMBER
+            "DEC" -> Calendar.DECEMBER
+            else -> -1
+        }
+    }
+
+
+
 
 }

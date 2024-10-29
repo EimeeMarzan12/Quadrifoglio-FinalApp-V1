@@ -1,5 +1,7 @@
 package com.surendramaran.yolov8tflite
 
+import android.graphics.Color
+
 data class BoundingBox(
     val x1: Float,
     val y1: Float,
@@ -16,6 +18,7 @@ data class BoundingBox(
     val top: Float,
     val width: Float,
     val height: Float,
+    var color: Int = Color.GRAY // Default color
 
 
 )

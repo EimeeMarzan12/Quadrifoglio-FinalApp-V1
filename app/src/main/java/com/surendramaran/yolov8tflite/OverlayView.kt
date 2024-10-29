@@ -9,7 +9,6 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
 
-
 class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
 
     private var results = listOf<BoundingBox>()
@@ -40,6 +39,7 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
         textPaint.style = Paint.Style.FILL
         textPaint.textSize = 50f
 
+        // Default box color; can be overridden later
         boxPaint.color = ContextCompat.getColor(context!!, R.color.bounding_box_color)
         boxPaint.strokeWidth = 8F
         boxPaint.style = Paint.Style.STROKE
@@ -52,16 +52,19 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
         val canvasWidth = width
         val canvasHeight = height
 
-        results.forEach {
+        results.forEach { box ->
             // Adjust coordinates based on current orientation
-            val left = it.x1 * canvasWidth
-            val top = it.y1 * canvasHeight
-            val right = it.x2 * canvasWidth
-            val bottom = it.y2 * canvasHeight
+            val left = box.x1 * canvasWidth
+            val top = box.y1 * canvasHeight
+            val right = box.x2 * canvasWidth
+            val bottom = box.y2 * canvasHeight
+
+            // Set the box color based on expiry status
+            boxPaint.color = box.color // Use the color from the BoundingBox
 
             // Draw bounding box
             canvas.drawRect(left, top, right, bottom, boxPaint)
-            val drawableText = it.clsName
+            val drawableText = box.clsName
 
             // Prepare text background
             textBackgroundPaint.getTextBounds(drawableText, 0, drawableText.length, bounds)
@@ -79,12 +82,10 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
         }
     }
 
-
     fun setResults(boundingBoxesModel1: List<BoundingBox>) {
-        results = boundingBoxesModel1 // Combine the results from both models
-        invalidate()
+        results = boundingBoxesModel1 // Update the results
+        invalidate() // Request redraw
     }
-
 
     companion object {
         private const val BOUNDING_RECT_TEXT_PADDING = 8

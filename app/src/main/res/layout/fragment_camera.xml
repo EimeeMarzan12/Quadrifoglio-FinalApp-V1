@@ -10,9 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!-- Recognized TextView (Top Left) -->
-
-
     <!-- Inference Time TextView (Top Right) -->
     <TextView
         android:id="@+id/inferenceTime"
@@ -46,6 +43,8 @@
         android:layout_below="@id/qty"
         android:layout_alignParentStart="true"
         android:background="@drawable/border_background" />
+
+
 
     <!-- Stop Detection Button (Bottom Center) -->
     <Button
