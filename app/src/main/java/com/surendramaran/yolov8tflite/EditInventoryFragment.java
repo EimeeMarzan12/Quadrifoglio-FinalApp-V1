@@ -8,10 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.appcompat.app.AlertDialog;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +87,15 @@ public class EditInventoryFragment extends Fragment {
             navigateToDashboardFragment();
         });
 
+        // Call the updateUIForFragment method from MainActivity
+        if (getActivity() instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.updateUIForFragment("Inventory", R.drawable.ic_inventory_bluef, "#5075E8",
+                    R.drawable.ic_home_grayo, "#4D4D4D",
+                    R.drawable.ic_profile_grayo, "#4D4D4D");
+        }
+
+
         return view;
     }
 
@@ -111,20 +123,59 @@ public class EditInventoryFragment extends Fragment {
     void addItemView(Item item) {
         View itemView = LayoutInflater.from(getContext()).inflate(R.layout.item_layout, itemContainer, false);
 
-        // Reference to individual item views
+        ImageView itemPic = itemView.findViewById(R.id.item_pic);
         TextView itemName = itemView.findViewById(R.id.item_name);
         TextView itemQty = itemView.findViewById(R.id.item_qty);
         TextView itemExpiry = itemView.findViewById(R.id.item_expiry);
 
-        // Use ternary operator to avoid null values
         itemName.setText(item.getName() != null ? item.getName() : "Unknown Item");
         itemQty.setText(item.getQuantity() != null ? item.getQuantity() : "0");
         itemExpiry.setText(item.getExpiry() != null ? item.getExpiry() : "No Expiry Date");
 
-        // Add the item view to the container
+        // Set image based on item name
+        switch (item.getName()) {
+            case "Biogesic":
+                itemPic.setImageResource(R.drawable.biogesic);
+                break;
+            case "Dolan":
+                itemPic.setImageResource(R.drawable.dolanfp);
+                break;
+            case "Decolgen":
+                itemPic.setImageResource(R.drawable.decolgen_nodrowse);
+                break;
+            case "Enervon":
+                itemPic.setImageResource(R.drawable.enervon);
+                break;
+            default:
+                itemPic.setImageResource(R.drawable.img_1); // Fallback image
+                break;
+        }
+
+        // Set a long click listener for deletion
+        itemView.setOnLongClickListener(v -> {
+            showDeleteConfirmationDialog(item, itemView);
+            return true; // Return true to indicate the event is consumed
+        });
+
         itemContainer.addView(itemView);
         Log.d(TAG, "Item added: " + item.getName());
     }
+
+    private void showDeleteConfirmationDialog(Item item, View itemView) {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Delete this item?")
+                .setMessage("Are you sure you want to delete this item?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    // Remove the item from the list and update the ViewModel
+                    itemList.remove(item);
+                    viewModel.removeItem(item); // Assuming you have this method in your ViewModel
+                    itemContainer.removeView(itemView); // Remove the item view
+                    Log.d(TAG, "Item deleted: " + item.getName());
+                })
+                .setNegativeButton("No", null) // Dismiss the dialog
+                .show();
+    }
+
 
 
     // Override onDestroyView to clean up any resources

@@ -19,8 +19,8 @@
         <RelativeLayout
             android:id="@+id/top1"
             android:layout_width="match_parent"
-            android:layout_height="70sp"
-            android:paddingHorizontal="3sp"
+            android:layout_height="60sp"
+            android:paddingHorizontal="30sp"
             android:paddingVertical="5sp">
 
             <TextView
@@ -44,16 +44,27 @@
                 android:text="Qty" />
 
             <TextView
+                style="@style/size14Text_DavysGray"
                 android:layout_width="50dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="265sp"
                 android:layout_marginTop="20sp"
                 android:layout_marginEnd="10sp"
                 android:layout_marginBottom="10sp"
-                android:text="Expiry"
-                style="@style/size14Text_DavysGray"
-                />
+                android:text="Exp" />
+
+
         </RelativeLayout>
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/top1"
+            android:layout_marginTop="4dp"
+            android:background="#4169E1 " />
+
+
 
 
         <LinearLayout
@@ -62,7 +73,7 @@
             android:layout_height="match_parent"
             android:layout_below="@id/top1"
             android:orientation="vertical"
-            android:paddingHorizontal="30dp">
+            android:paddingHorizontal="0dp">
 
             <!-- Dynamically added items will go here -->
 

@@ -21,4 +21,13 @@ public class InventoryViewModel extends ViewModel {
         items.setValue(currentItems);
     }
 
+    public void removeItem(EditInventoryFragment.Item item) {
+        List<EditInventoryFragment.Item> currentItems = items.getValue();
+        if (currentItems != null) {
+            currentItems.remove(item);
+            items.setValue(currentItems); // Update the LiveData
+        }
+    }
+
+
 }
