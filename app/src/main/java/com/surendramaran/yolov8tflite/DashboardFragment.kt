@@ -1,3 +1,4 @@
+
 package com.surendramaran.yolov8tflite
 
 import android.os.Bundle
@@ -56,7 +57,7 @@ class DashboardFragment : Fragment() {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply {
-                setMargins(16, 8, 16, 8) // Margin around the item view
+                setMargins(16, 8, 16 , 8) // Margin around the item view
             }
             setPadding(16, 16, 16, 16) // Add padding for spacing
         }
@@ -68,6 +69,21 @@ class DashboardFragment : Fragment() {
             setTextColor(Color.BLACK) // Set text color
             // Add padding to the text for better readability
             setPadding(8, 8, 8, 8)
+            setOnClickListener {
+                val fragment = InventoryDetailsFragment()
+                val bundle = Bundle().apply {
+                    putString("name", item.name)
+                    putString("quantity", item.quantity)
+                    putString("expiry", item.expiry)
+                }
+                fragment.arguments = bundle
+
+                // Navigate to InventoryDetailsFragment
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.main_fragment, fragment)
+                    .addToBackStack(null)
+                    .commit()
+            }
         }
 
         // Determine the expiry color with pastel shades and reduced opacity

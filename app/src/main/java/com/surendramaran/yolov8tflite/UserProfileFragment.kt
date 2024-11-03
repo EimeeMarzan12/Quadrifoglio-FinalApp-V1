@@ -1,35 +1,46 @@
-package com.surendramaran.yolov8tflite
 
-import android.content.Intent
+package com.surendramaran.yolov8tflite
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 
 class UserProfileFragment : Fragment() {
     private lateinit var viewLayout: View
+    private lateinit var logBtn: ImageView // Assuming log_btn is an ImageView
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         viewLayout = inflater.inflate(R.layout.fragment_user_profile, container, false)
 
-        // Find the Sign Out button
-        val signOutButton: RelativeLayout = viewLayout.findViewById(R.id.user_signout_layout)
+        // Get the log button from MainActivity
+        logBtn = (activity as MainActivity).findViewById(R.id.logInventory_btn)
 
-        // Set an OnClickListener for the Sign Out button
-        signOutButton.setOnClickListener {
-            // Create an intent to navigate to the Login activity
-            val intent = Intent(activity, Login::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-            activity?.finish()  // Optional: Close the current fragment/activity to prevent back navigation
-        }
+        setupNavigation()
 
         return viewLayout
     }
+
+    private fun setupNavigation() {
+        logBtn.setOnClickListener {
+            // Call the method to update UI for the CameraFragment
+            (activity as? MainActivity)?.updateUIForFragment(
+                "Scanning", R.drawable.ic_inventory_grayo, "#4D4D4D",
+                R.drawable.ic_home_grayo, "#4D4D4D", R.drawable.ic_profile_grayo, "#4D4D4D"
+            )
+
+            // Create and navigate to CameraFragment
+            val cameraFragment = CameraFragment()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, cameraFragment)
+                .addToBackStack(null) // Add to back stack if you want to return
+                .commit()
+        }
+    }
+
 }

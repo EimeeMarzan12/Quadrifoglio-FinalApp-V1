@@ -2,24 +2,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="8dp">
+    android:orientation="horizontal"
+    android:paddingHorizontal="30dp"
+    android:paddingVertical="5dp"
+    android:layout_marginStart="0dp">
 
     <TextView
         android:id="@+id/item_name"
-        android:layout_width="wrap_content"
+        style="@style/size14Text_DavysGray"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Item Name" />
+        android:layout_weight="1"
+        android:layout_marginStart="18sp"
+        android:layout_marginEnd="10sp"
+        android:gravity="center"
+    />
 
     <TextView
         android:id="@+id/item_qty"
-        android:layout_width="wrap_content"
+        style="@style/size14Text_DavysGray"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Quantity" />
+        android:layout_weight="1"
+        android:layout_marginStart="24sp"
+        android:layout_marginEnd="0sp"
+        android:gravity="center"
+    />
 
     <TextView
         android:id="@+id/item_expiry"
-        android:layout_width="wrap_content"
+        style="@style/size14Text_DavysGray"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Expiry Date" />
+        android:layout_weight="1"
+        android:layout_marginStart="15sp"
+        android:layout_marginEnd="0sp"
+        android:gravity="center"
+    />
 </LinearLayout>
