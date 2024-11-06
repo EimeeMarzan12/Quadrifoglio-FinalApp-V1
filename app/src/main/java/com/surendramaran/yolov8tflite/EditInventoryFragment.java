@@ -14,7 +14,10 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.appcompat.app.AlertDialog;
+import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +31,17 @@ public class EditInventoryFragment extends Fragment {
     private List<Item> itemList;
     private InventoryViewModel viewModel;
 
+    // Firebase Database reference
+    private DatabaseReference databaseRef;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: Fragment created");
         View view = inflater.inflate(R.layout.fragment_edit_inventory, container, false);
+
+        // Initialize Firebase Database reference
+        databaseRef = FirebaseDatabase.getInstance().getReference("meds");
+
         itemContainer = view.findViewById(R.id.item_container);
         completePreviewButton = view.findViewById(R.id.completePreviewButton);
         itemList = new ArrayList<>();
@@ -41,17 +50,19 @@ public class EditInventoryFragment extends Fragment {
 
         // Check for arguments and handle nulls
         if (getArguments() != null) {
-            String itemName = getArguments().getString("itemName"); // Retrieve clsName
+            String itemName = getArguments().getString("itemName");
             String quantity = getArguments().getString("quantity");
             String expiry = getArguments().getString("expiry");
 
             if (itemName != null && !itemName.isEmpty() && quantity != null && !quantity.isEmpty() && expiry != null && !expiry.isEmpty()) {
                 Log.d(TAG, "Detected item: Name = " + itemName + ", Quantity = " + quantity + ", Expiry = " + expiry);
-                Item detectedItem = new Item(itemName, quantity, expiry); // Use clsName as item name
-                itemList.add(detectedItem);
+                Item detectedItem = new Item(itemName, quantity, expiry);
                 itemList.add(detectedItem);
                 addItemView(detectedItem);
                 viewModel.addItem(detectedItem);
+
+                // Write the detected item to Firebase
+                writeItemToFirebase(detectedItem);
             } else {
                 Log.e(TAG, "Quantity or expiry is null or empty in arguments");
             }
@@ -83,6 +94,7 @@ public class EditInventoryFragment extends Fragment {
             Log.d(TAG, "Save button clicked");
             for (Item item : itemList) {
                 viewModel.addItem(item);
+                writeItemToFirebase(item); // Save each item to Firebase
             }
             navigateToDashboardFragment();
         });
@@ -94,7 +106,6 @@ public class EditInventoryFragment extends Fragment {
                     R.drawable.ic_home_grayo, "#4D4D4D",
                     R.drawable.ic_profile_grayo, "#4D4D4D");
         }
-
 
         return view;
     }
@@ -166,22 +177,27 @@ public class EditInventoryFragment extends Fragment {
                 .setTitle("Delete this item?")
                 .setMessage("Are you sure you want to delete this item?")
                 .setPositiveButton("Yes", (dialog, which) -> {
-                    // Remove the item from the list and update the ViewModel
                     itemList.remove(item);
-                    viewModel.removeItem(item); // Assuming you have this method in your ViewModel
-                    itemContainer.removeView(itemView); // Remove the item view
+                    viewModel.removeItem(item);
+                    itemContainer.removeView(itemView);
                     Log.d(TAG, "Item deleted: " + item.getName());
                 })
-                .setNegativeButton("No", null) // Dismiss the dialog
+                .setNegativeButton("No", null)
                 .show();
     }
 
-
-
-    // Override onDestroyView to clean up any resources
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    // Function to write an item to Firebase
+    private void writeItemToFirebase(Item item) {
+        String key = databaseRef.push().getKey();
+        if (key != null) {
+            databaseRef.child(key).setValue(item)
+                    .addOnSuccessListener(aVoid ->
+                            Toast.makeText(getContext(), "Item saved to Firebase", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e ->
+                            Toast.makeText(getContext(), "Failed to save item to Firebase", Toast.LENGTH_SHORT).show());
+        } else {
+            Log.e(TAG, "Failed to get Firebase key");
+        }
     }
 
     // Data class for an Item
@@ -190,14 +206,12 @@ public class EditInventoryFragment extends Fragment {
         private String quantity;
         private String expiry;
 
-        // Constructor
         public Item(String name, String quantity, String expiry) {
             this.name = name;
             this.quantity = quantity;
             this.expiry = expiry;
         }
 
-        // Constructor used for Parcelable
         protected Item(Parcel in) {
             name = in.readString();
             quantity = in.readString();

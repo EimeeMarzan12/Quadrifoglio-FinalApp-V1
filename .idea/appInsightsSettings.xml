@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.surendramaran.yolov8tflite" />
+                  <option name="mobileSdkAppId" value="1:758385876590:android:999c24899d7899d5ae507f" />
+                  <option name="projectId" value="admin-website-39ecd" />
+                  <option name="projectNumber" value="758385876590" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

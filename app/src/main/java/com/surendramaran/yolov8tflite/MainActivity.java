@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,7 +13,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import androidx.lifecycle.ViewModelProvider;
+import android.widget.Toast;
+
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
     private ImageView log_btn;
@@ -28,11 +33,17 @@ public class MainActivity extends AppCompatActivity {
     private RelativeLayout profile_btn;
     private InventoryViewModel viewModel;
 
+    // Firebase Database reference
+    private DatabaseReference databaseRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Initialize Firebase
+        FirebaseApp.initializeApp(this);
+        databaseRef = FirebaseDatabase.getInstance().getReference("meds");
 
         // Initialize UI elements
         log_btn = findViewById(R.id.logInventory_btn);
@@ -63,8 +74,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Retrieve the username and password passed from LoginActivity
+        String username = getIntent().getStringExtra("username_key");
+        String password = getIntent().getStringExtra("password_key");
+
+        // Save these values to be accessible when you load UserProfileFragment
+        Bundle bundle = new Bundle();
+        bundle.putString("username_key", username);
+        bundle.putString("password_key", password);
+
+        // Use the bundle to set arguments on UserProfileFragment, but don’t display it yet
+        UserProfileFragment userProfileFragment = new UserProfileFragment();
+        userProfileFragment.setArguments(bundle);
+
         // Set up click listeners for bottom navigation
         setupNavigation();
+
+
     }
 
     private void setupNavigation() {
@@ -95,12 +121,31 @@ public class MainActivity extends AppCompatActivity {
         profile_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Update the UI for Profile
                 updateUIForFragment("Profile", R.drawable.ic_inventory_grayo, "#4D4D4D",
                         R.drawable.ic_home_grayo, "#4D4D4D", R.drawable.ic_profile_bluef, "#5075E8");
 
-                useFragment(new UserProfileFragment(), R.id.main_fragment);
+                // Retrieve username and password from the Intent
+                String username = getIntent().getStringExtra("username_key");
+                String password = getIntent().getStringExtra("password_key");
+
+                // Bundle the data
+                Bundle bundle = new Bundle();
+                bundle.putString("username_key", username);
+                bundle.putString("password_key", password);
+
+                // Create a new UserProfileFragment instance and set the bundle as its arguments
+                UserProfileFragment userProfileFragment = new UserProfileFragment();
+                userProfileFragment.setArguments(bundle);
+
+                // Display UserProfileFragment without replacing the current fragment permanently
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.main_fragment, userProfileFragment)
+                        .addToBackStack(null) // Allows returning to the previous fragment
+                        .commit();
             }
         });
+
 
         // Inventory button click
         inventory_btn.setOnClickListener(new View.OnClickListener() {
@@ -134,6 +179,33 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
+    // Example method to write data to Firebase Realtime Database
+    private void writeSampleMedicineData(String name, String quantity, String expiry) {
+        String key = databaseRef.push().getKey(); // Generate a unique key for each entry
+        if (key != null) {
+            Medicine medicine = new Medicine(name, quantity, expiry);
+            databaseRef.child(key).setValue(medicine)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(MainActivity.this, "Data saved to Firebase", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(MainActivity.this, "Failed to save data", Toast.LENGTH_SHORT).show();
+                    });
+        }
+    }
 
+    // Medicine class to define the data structure for Firebase
+    public static class Medicine {
+        public String name;
+        public String quantity;
+        public String expiry;
 
+        public Medicine() { }
+
+        public Medicine(String name, String quantity, String expiry) {
+            this.name = name;
+            this.quantity = quantity;
+            this.expiry = expiry;
+        }
+    }
 }

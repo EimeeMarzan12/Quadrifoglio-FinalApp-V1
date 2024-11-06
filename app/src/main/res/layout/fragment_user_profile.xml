@@ -1,290 +1,125 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:textColor="#CCCCCC"
-    android:background="@color/white"
-    tools:context=".MainActivity">
+    android:background="@color/white">
 
+    <!-- User Information Layout -->
     <RelativeLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
-        android:padding="10dp">
-
-
-    <RelativeLayout
-
-
         android:id="@+id/name_layout"
         android:layout_width="match_parent"
-        android:layout_height="100sp"
-        android:paddingHorizontal="30sp"
-        android:paddingVertical="5sp"
-        android:layout_marginTop="20sp">
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="30dp"
+        android:paddingVertical="5dp"
+        android:layout_marginTop="20dp">
 
+        <!-- User Profile Picture -->
         <ImageView
             android:id="@+id/item_pic1"
-            android:layout_width="70sp"
-            android:layout_height="75sp"
-            android:layout_marginTop="-0sp"
+            android:layout_width="70dp"
+            android:layout_height="75dp"
             android:src="@drawable/sample_user" />
 
+        <!-- User Name Placeholder -->
         <TextView
             android:id="@+id/user_name"
-            android:layout_width="300sp"
-            android:layout_height="40sp"
-            android:layout_marginStart="80sp"
-            android:text="Christian Paolo Reyes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="80dp"
+            android:layout_marginTop="25dp"
             android:gravity="center_vertical"
-            style="@style/size18Text_DavysGray_bold"/>
-        <View
-            android:layout_width="200sp"
-            android:layout_marginStart="70sp"
-            android:layout_height="4sp"
-            android:layout_marginTop="40sp"
-            android:background="#c0c0c0" />
-
-        <TextView
-            android:id="@+id/user_age"
-            style="@style/size12Text_DavysGray"
-            android:layout_width="80sp"
-            android:layout_height="40sp"
-            android:layout_marginStart="70sp"
-            android:layout_marginTop="40sp"
-            android:gravity="center"
-            android:text="21" />
-
-        <TextView
-            style="@style/size18Text_DavysGray_bold"
-            android:layout_width="10sp"
-            android:layout_height="40sp"
-            android:layout_marginStart="150sp"
-            android:layout_marginTop="40sp"
-            android:gravity="center_vertical"
-            android:text="| " />
-
-        <TextView
-            android:id="@+id/your_branch"
-            style="@style/size12Text_DavysGray"
-            android:layout_width="80sp"
-            android:layout_height="40sp"
-            android:layout_marginStart="160sp"
-            android:layout_marginTop="40sp"
-            android:gravity="center"
-            android:text="Fairview" />
-
+            android:text="User Name"
+            style="@style/size18Text_DavysGray_bold" />
     </RelativeLayout>
 
+    <!-- Username Layout -->
     <RelativeLayout
         android:id="@+id/username_layout"
         android:layout_width="match_parent"
-        android:layout_height="90sp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/name_layout"
-        android:paddingHorizontal="30sp"
-        android:paddingVertical="5sp">
+        android:padding="15dp"
+        android:layout_margin="10dp"
+        android:background="#F5F5F5"
+        android:elevation="2dp">
 
-        <TextView
-            android:layout_width="100sp"
-            android:layout_height="40sp"
-            android:layout_marginStart="20sp"
-            android:text="User Name"
-            android:gravity="center_vertical"
-            style="@style/size14Text_DavysGray_bold"/>
-        <View
-            android:layout_width="300sp"
-            android:layout_marginStart="20sp"
-            android:layout_height="1sp"
-            android:layout_marginTop="35sp"
-            android:background="#c0c0c0" />
+    <!-- Username Label -->
+    <TextView
+        android:id="@+id/user_name2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="Username"
+        style="@style/size14Text_DavysGray_bold"
+        android:layout_alignParentStart="true" />
 
-        <TextView
-            android:id="@+id/user_username"
-            style="@style/size12Text_DavysGray"
-            android:layout_width="200sp"
-            android:layout_height="40sp"
-            android:layout_marginStart="40sp"
-            android:layout_marginTop="40sp"
-            android:gravity="center_vertical"
-            android:text="Christian Paolo Reyes" />
+    <!-- Username Value -->
+    <TextView
+        android:id="@+id/user_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/user_name2"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="-10dp"
+        android:layout_marginBottom="2dp"
+        android:text="Username Placeholder"
+        style="@style/size12Text_DavysGray"
+        android:layout_centerVertical="true" />
 
-        <RelativeLayout
-            android:id="@+id/edit_username"
-            android:layout_width="40sp"
-            android:layout_height="40sp"
-            android:layout_marginRight="10sp"
-            android:layout_marginStart="260sp"
-            android:layout_marginTop="40sp"
-            android:padding="10sp">
-
-            <ImageView
-                android:layout_width="50sp"
-                android:layout_height="50sp"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_edit"
-                />
-
-        </RelativeLayout>
-    </RelativeLayout>
-
-
-    <RelativeLayout
-        android:id="@+id/password_layout"
+    <!-- Divider -->
+    <View
         android:layout_width="match_parent"
-        android:layout_height="90sp"
-        android:layout_below="@id/username_layout"
-        android:paddingHorizontal="30sp"
-        android:paddingVertical="5sp">
+        android:layout_height="1dp"
+        android:layout_below="@id/user_username"
+        android:layout_marginTop="10dp"
+        android:background="#D3D3D3" /> <!-- Light gray divider -->
+</RelativeLayout>
 
-        <TextView
-            android:layout_width="100sp"
-            android:layout_height="40sp"
-            android:layout_marginStart="20sp"
-            android:text="Password"
-            android:gravity="center_vertical"
-            style="@style/size14Text_DavysGray_bold"/>
-        <View
-            android:layout_width="300sp"
-            android:layout_marginStart="20sp"
-            android:layout_height="1sp"
-            android:layout_marginTop="35sp"
-            android:background="#c0c0c0" />
-
-        <TextView
-            android:id="@+id/user_password"
-            style="@style/size12Text_DavysGray"
-            android:layout_width="200sp"
-            android:layout_height="40sp"
-            android:layout_marginStart="40sp"
-            android:layout_marginTop="40sp"
-            android:gravity="center_vertical"
-            android:text="* * * * * * * *" />
-
-        <RelativeLayout
-            android:id="@+id/edit_password"
-            android:layout_width="40sp"
-            android:layout_height="40sp"
-            android:layout_marginRight="10sp"
-            android:layout_marginStart="260sp"
-            android:layout_marginTop="40sp"
-            android:padding="10sp">
-
-            <ImageView
-                android:layout_width="50sp"
-                android:layout_height="50sp"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_edit"
-                />
-
-        </RelativeLayout>
-    </RelativeLayout>
-
+        <!-- Password Layout -->
     <RelativeLayout
-        android:id="@+id/emailadd_layout"
-        android:layout_width="match_parent"
-        android:layout_height="90sp"
-        android:layout_below="@id/password_layout"
-        android:paddingHorizontal="30sp"
-        android:paddingVertical="5sp">
+    android:id="@+id/password_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/username_layout"
+    android:padding="15dp"
+    android:layout_margin="10dp"
+    android:background="#F5F5F5"
+        android:elevation="2dp">
 
-        <TextView
-            android:layout_width="100sp"
-            android:layout_height="40sp"
-            android:layout_marginStart="20sp"
-            android:text="Email Address"
-            android:gravity="center_vertical"
-            style="@style/size14Text_DavysGray_bold"/>
-        <View
-            android:layout_width="300sp"
-            android:layout_marginStart="20sp"
-            android:layout_height="1sp"
-            android:layout_marginTop="35sp"
-            android:background="#c0c0c0" />
+        <!-- Password Label -->
+    <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="20dp"
+    android:text="Password"
+    style="@style/size14Text_DavysGray_bold"
+    android:layout_alignParentStart="true" />
 
-        <TextView
-            android:id="@+id/user_emailadd"
-            style="@style/size12Text_DavysGray"
-            android:layout_width="150sp"
-            android:layout_height="40sp"
-            android:layout_marginStart="40sp"
-            android:layout_marginTop="40sp"
-            android:gravity="center_vertical"
-            android:text="cpaolo852@gmail.com" />
+        <!-- Password Value -->
+    <TextView
+    android:id="@+id/user_password"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="90dp"
+    android:text="Password Placeholder"
+        android:layout_marginTop="-10dp"
+        android:layout_marginBottom="2dp"
+    style="@style/size12Text_DavysGray"
+    android:layout_centerVertical="true" />
 
-        <RelativeLayout
-            android:id="@+id/edit_emailadd"
-            android:layout_width="40sp"
-            android:layout_height="40sp"
-            android:layout_marginRight="10sp"
-            android:layout_marginStart="260sp"
-            android:layout_marginTop="40sp"
-            android:padding="10sp">
-
-            <ImageView
-                android:layout_width="50sp"
-                android:layout_height="50sp"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_edit"
-                />
-
-        </RelativeLayout>
+        <!-- Divider -->
+    <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:layout_below="@id/user_password"
+    android:layout_marginTop="10dp"
+    android:background="#D3D3D3" /> <!-- Light gray divider -->
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/user_contactno_layout"
-        android:layout_width="match_parent"
-        android:layout_height="130sp"
-        android:layout_below="@id/emailadd_layout"
-        android:paddingHorizontal="30sp"
-        android:paddingVertical="5sp">
 
-        <TextView
-            android:layout_width="100sp"
-            android:layout_height="40sp"
-            android:layout_marginStart="20sp"
-            android:text="Contact No."
-            android:gravity="center_vertical"
-            style="@style/size14Text_DavysGray_bold"/>
-        <View
-            android:layout_width="300sp"
-            android:layout_marginStart="20sp"
-            android:layout_height="1sp"
-            android:layout_marginTop="35sp"
-            android:background="#c0c0c0" />
 
-        <TextView
-            android:id="@+id/user_contactno1"
-            style="@style/size12Text_DavysGray"
-            android:layout_width="150sp"
-            android:layout_height="40sp"
-            android:layout_marginStart="40sp"
-            android:layout_marginTop="40sp"
-            android:gravity="center_vertical"
-            android:text="09213509517" />
-
-        <RelativeLayout
-            android:id="@+id/edit_contactno1"
-            android:layout_width="40sp"
-            android:layout_height="40sp"
-            android:layout_marginRight="10sp"
-            android:layout_marginStart="260sp"
-            android:layout_marginTop="40sp"
-            android:padding="10sp">
-
-            <ImageView
-                android:layout_width="50sp"
-                android:layout_height="50sp"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_edit"
-                />
-
-        </RelativeLayout>
-
-    </RelativeLayout>
-
+    <!-- Sign Out Button Layout -->
     <RelativeLayout
         android:id="@+id/user_signout_layout"
         android:layout_width="150sp"
@@ -296,6 +131,7 @@
         android:background="@drawable/rectangle_light_gray"
         android:clickable="true"
         android:focusable="true"
+
         >
 
         <TextView
@@ -320,13 +156,6 @@
                 android:layout_width="60sp"
                 android:layout_height="60sp"
                 android:src="@drawable/ic_exit" />
-
-
-        </RelativeLayout>
-
-
     </RelativeLayout>
-
-
 </RelativeLayout>
 </RelativeLayout>

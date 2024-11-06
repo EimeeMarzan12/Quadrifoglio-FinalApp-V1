@@ -7,10 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
+import com.google.firebase.database.FirebaseDatabase
 import java.text.SimpleDateFormat
 import java.util.*
 
 class InventoryDetailsFragment : Fragment() {
+
+    private lateinit var itemKey: String // Store the Firebase key of the item
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,6 +32,7 @@ class InventoryDetailsFragment : Fragment() {
         val name = arguments?.getString("name") ?: "Unknown"
         val quantity = arguments?.getString("quantity") ?: "0"
         val expiry = arguments?.getString("expiry") ?: "No Expiry Date"
+        itemKey = arguments?.getString("itemKey") ?: ""
 
         // Set data to TextViews
         nameTextView.text = "Name: $name"
@@ -61,7 +66,31 @@ class InventoryDetailsFragment : Fragment() {
             requireActivity().supportFragmentManager.popBackStack()
         }
 
+        // Set up the delete button to remove the item from Firebase
+        val deleteButton = view.findViewById<Button>(R.id.btn_delete)
+        deleteButton.setOnClickListener {
+            deleteItemFromFirebase()
+        }
+
         return view
+    }
+
+    private fun deleteItemFromFirebase() {
+        if (itemKey.isNotEmpty()) {
+            val database = FirebaseDatabase.getInstance()
+            val itemRef = database.getReference("meds").child(itemKey)
+
+            itemRef.removeValue()
+                .addOnSuccessListener {
+                    Toast.makeText(requireContext(), "Item deleted successfully", Toast.LENGTH_SHORT).show()
+                    requireActivity().supportFragmentManager.popBackStack() // Go back after deletion
+                }
+                .addOnFailureListener {
+                    Toast.makeText(requireContext(), "Failed to delete item", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            Toast.makeText(requireContext(), "Item key not found", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun parseExpiryDate(expiry: String): Long {

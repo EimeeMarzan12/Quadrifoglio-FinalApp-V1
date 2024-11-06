@@ -1,4 +1,3 @@
-
 package com.surendramaran.yolov8tflite
 
 import android.os.Bundle
@@ -7,10 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.firebase.database.*
 import com.surendramaran.yolov8tflite.EditInventoryFragment.Item
-
 import android.graphics.Color
 import android.text.format.DateUtils
 import java.text.SimpleDateFormat
@@ -24,50 +24,45 @@ class DashboardFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_dashboard, container, false)
 
-        // Initialize the item container
         itemContainer = view.findViewById(R.id.item_container)
 
-        // Initialize the ViewModel
         viewModel = ViewModelProvider(requireActivity()).get(InventoryViewModel::class.java)
 
         // Observe the items LiveData
         viewModel.getItems().observe(viewLifecycleOwner) { items ->
-            // Clear the current views in the container
             itemContainer.removeAllViews()
-
-            // Display the items
             items?.let {
                 for (item in it) {
-                    displayItem(item)
+                    displayItem(item, "")
                 }
             }
         }
 
+        // Load meds data from Firebase
+        loadMedsFromFirebase()
+
         return view
     }
 
-    private fun displayItem(item: Item) {
-        // Create a LinearLayout for each item
+    private fun displayItem(item: Item, itemKey: String) {
+        if (!isAdded) return  // Check if the fragment is attached to the activity
         val itemView = LinearLayout(requireContext()).apply {
             orientation = LinearLayout.VERTICAL
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply {
-                setMargins(16, 8, 16 , 8) // Margin around the item view
+                setMargins(16, 8, 16, 8)
             }
-            setPadding(16, 16, 16, 16) // Add padding for spacing
+            setPadding(16, 16, 16, 16)
         }
 
-        // Create a TextView for item details
         val textView = TextView(requireContext()).apply {
             text = "Name: ${item.name}\nQuantity: ${item.quantity}\nExpiry: ${item.expiry}"
             textSize = 16f
-            setTextColor(Color.BLACK) // Set text color
-            // Add padding to the text for better readability
+            setTextColor(Color.BLACK)
             setPadding(8, 8, 8, 8)
             setOnClickListener {
                 val fragment = InventoryDetailsFragment()
@@ -75,10 +70,9 @@ class DashboardFragment : Fragment() {
                     putString("name", item.name)
                     putString("quantity", item.quantity)
                     putString("expiry", item.expiry)
+                    putString("itemKey", itemKey) // Pass the itemKey here
                 }
                 fragment.arguments = bundle
-
-                // Navigate to InventoryDetailsFragment
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.main_fragment, fragment)
                     .addToBackStack(null)
@@ -86,25 +80,48 @@ class DashboardFragment : Fragment() {
             }
         }
 
-        // Determine the expiry color with pastel shades and reduced opacity
         val expiryDate = parseExpiryDate(item.expiry)
         val currentTime = System.currentTimeMillis()
         val color = when {
-            expiryDate < currentTime -> Color.argb(150, 255, 99, 71) // Pastel red (Tomato)
-            expiryDate < currentTime + DateUtils.YEAR_IN_MILLIS / 2 -> Color.argb(150, 255, 255, 102) // Pastel yellow
-            else -> Color.argb(150, 144, 238, 144) // Pastel green (Light Green)
+            expiryDate < currentTime -> Color.argb(150, 255, 99, 71)
+            expiryDate < currentTime + DateUtils.YEAR_IN_MILLIS / 2 -> Color.argb(150, 255, 255, 102)
+            else -> Color.argb(150, 144, 238, 144)
         }
 
-        // Set the background color with reduced opacity
         itemView.setBackgroundColor(color)
-
-        // Add TextView to itemView
         itemView.addView(textView)
-
-        // Add itemView to the container
         itemContainer.addView(itemView)
     }
 
+    private fun loadMedsFromFirebase() {
+        val database = FirebaseDatabase.getInstance()
+        val medicineRef = database.getReference("meds")
+
+        medicineRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                if (!isAdded) return  // Check if the fragment is attached to the activity
+
+                itemContainer.removeAllViews() // Clear previous data
+
+                for (snapshot in dataSnapshot.children) {
+                    val name = snapshot.child("name").getValue(String::class.java) ?: "Unknown"
+                    val quantity = snapshot.child("quantity").getValue(String::class.java) ?: "0"
+                    val expiry = snapshot.child("expiry").getValue(String::class.java) ?: "No Expiry Date"
+                    val itemKey = snapshot.key ?: "" // Get the key of each item
+
+                    // Create an Item object
+                    val item = Item(name, quantity, expiry)
+                    displayItem(item, itemKey) // Pass the itemKey to displayItem
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                if (!isAdded) return  // Check if the fragment is attached to the activity
+                Toast.makeText(requireContext(), "Failed to load data", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
 
     private fun parseExpiryDate(expiry: String): Long {
         val dateFormat = SimpleDateFormat("MMM yyyy", Locale.getDefault())
@@ -118,5 +135,4 @@ class DashboardFragment : Fragment() {
         val monthDifference = calendarEnd.get(Calendar.MONTH) - calendarStart.get(Calendar.MONTH)
         return yearDifference * 12 + monthDifference
     }
-
 }
