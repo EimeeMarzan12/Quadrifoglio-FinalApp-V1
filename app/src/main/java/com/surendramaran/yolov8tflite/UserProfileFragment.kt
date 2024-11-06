@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.core.Context
 
@@ -45,8 +46,6 @@ class UserProfileFragment : Fragment() {
         // Set the password text as asterisks
                 userPasswordTextView.text = password?.let { "*".repeat(it.length) } ?: "Password not found"
 
-        setupNavigation()
-
         // Initialize the sign-out RelativeLayout (used for clicking the layout to sign out)
         signOutLayout = viewLayout.findViewById(R.id.user_signout_layout)
 
@@ -55,12 +54,17 @@ class UserProfileFragment : Fragment() {
             signOutUser()
         }
 
+        setupNavigation()
+
         return viewLayout
     }
 
     private fun setupNavigation() {
         logBtn.setOnClickListener {
-            // Call the method to update UI for the CameraFragment
+            // Clear the back stack
+            requireActivity().supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+
+            // Update UI for the CameraFragment
             (activity as? MainActivity)?.updateUIForFragment(
                 "Scanning", R.drawable.ic_inventory_grayo, "#4D4D4D",
                 R.drawable.ic_home_grayo, "#4D4D4D", R.drawable.ic_profile_grayo, "#4D4D4D"
@@ -70,11 +74,8 @@ class UserProfileFragment : Fragment() {
             val cameraFragment = CameraFragment()
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, cameraFragment)
-                .addToBackStack(null) // Add to back stack if you want to return
                 .commit()
         }
-
-
     }
 
     // Sign out the user

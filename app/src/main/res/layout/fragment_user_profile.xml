@@ -5,171 +5,157 @@
     android:textColor="#CCCCCC"
     android:background="@color/white">
 
+    <!-- Main Fragment Container -->
     <RelativeLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="1dp"
         android:padding="10dp">
 
-    <!-- User Information Layout -->
-    <RelativeLayout
-        android:id="@+id/name_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="30dp"
-        android:paddingVertical="5dp"
-        android:layout_marginTop="20dp">
-
-        <!-- User Profile Picture -->
-        <ImageView
-            android:id="@+id/item_pic1"
-            android:layout_width="70dp"
-            android:layout_height="75dp"
-            android:src="@drawable/sample_user" />
-
-        <!-- User Name Placeholder -->
-        <TextView
-            android:id="@+id/user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="80dp"
-            android:layout_marginTop="25dp"
-            android:gravity="center_vertical"
-            android:text="User Name"
-            android:textColor="#5B3B7E"
-            style="@style/size18Text_DavysGray_bold" />
-    </RelativeLayout>
-
-    <!-- Username Layout -->
-    <RelativeLayout
-        android:id="@+id/username_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/name_layout"
-        android:padding="15dp"
-        android:layout_margin="10dp"
-        android:background="#E6E6FA"
-        android:elevation="2dp">
-
-    <!-- Username Label -->
-    <TextView
-        android:id="@+id/user_name2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:text="Username"
-        android:textColor="#6A0DAD"
-        style="@style/size14Text_DavysGray_bold"
-        android:layout_alignParentStart="true" />
-
-    <!-- Username Value -->
-    <TextView
-        android:id="@+id/user_username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/user_name2"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="-10dp"
-        android:layout_marginBottom="2dp"
-        android:text="Username Placeholder"
-        android:textColor="#9966CC"
-        style="@style/size12Text_DavysGray"
-        android:layout_centerVertical="true" />
-
-    <!-- Divider -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/user_username"
-        android:layout_marginTop="10dp"
-        android:background="#6A0DAD" /> <!-- Light gray divider -->
-</RelativeLayout>
-
-        <!-- Password Layout -->
-    <RelativeLayout
-    android:id="@+id/password_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/username_layout"
-    android:padding="15dp"
-    android:layout_margin="10dp"
-    android:background="#E6E6FA"
-        android:elevation="2dp">
-
-        <!-- Password Label -->
-    <TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="20dp"
-    android:text="Password"
-    android:textColor="#6A0DAD"
-    style="@style/size14Text_DavysGray_bold"
-    android:layout_alignParentStart="true" />
-
-        <!-- Password Value -->
-    <TextView
-    android:id="@+id/user_password"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="90dp"
-    android:text="Password Placeholder"
-        android:textColor="#9966CC"
-        android:layout_marginTop="-10dp"
-        android:layout_marginBottom="2dp"
-    style="@style/size12Text_DavysGray"
-    android:layout_centerVertical="true" />
-
-        <!-- Divider -->
-    <View
-    android:layout_width="match_parent"
-    android:layout_height="1dp"
-    android:layout_below="@id/user_password"
-    android:layout_marginTop="10dp"
-    android:background="#6A0DAD" /> <!-- Light gray divider -->
-    </RelativeLayout>
-
-
-
-    <!-- Sign Out Button Layout -->
-    <RelativeLayout
-        android:id="@+id/user_signout_layout"
-        android:layout_width="150sp"
-        android:layout_height="60sp"
-        android:layout_marginLeft="110sp"
-        android:layout_marginRight="110sp"
-        android:layout_marginBottom="20sp"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/rectangle_msblue"
-        android:clickable="true"
-        android:focusable="true"
-
-        >
-
-        <TextView
-            style="@style/size14Text_DavysGray_bold"
-            android:layout_width="60sp"
-            android:layout_height="40sp"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="30sp"
-            android:gravity="center_vertical"
-            android:text="Sign out"
-            android:textColor="#B0B0B0"/>
-
+        <!-- User Information Layout -->
         <RelativeLayout
-            android:id="@+id/exit"
-            android:layout_width="50sp"
-            android:layout_height="50sp"
-            android:layout_marginStart="80sp"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10sp"
-            android:padding="10sp">
+            android:id="@+id/name_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="30dp"
+            android:paddingVertical="5dp"
+            android:layout_marginTop="20dp">
 
             <ImageView
+                android:id="@+id/item_pic1"
+                android:layout_width="70dp"
+                android:layout_height="75dp"
+                android:src="@drawable/sample_user" />
+
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="80dp"
+                android:layout_marginTop="25dp"
+                android:text="User Name"
+                android:textColor="#5B3B7E"
+                style="@style/size18Text_DavysGray_bold" />
+        </RelativeLayout>
+
+        <!-- Username Layout -->
+        <RelativeLayout
+            android:id="@+id/username_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/name_layout"
+            android:padding="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_margin="10dp"
+            android:background="#E6E6FA"
+            android:elevation="2dp">
+
+            <TextView
+                android:id="@+id/user_name2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="Username"
+                android:textColor="#6A0DAD"
+                style="@style/size14Text_DavysGray_bold" />
+
+            <TextView
+                android:id="@+id/user_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/user_name2"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="-10dp"
+                android:text="Username Placeholder"
+                android:textColor="#9966CC"
+                style="@style/size12Text_DavysGray"
+                android:layout_centerVertical="true" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/user_username"
+                android:layout_marginTop="10dp"
+                android:background="#6A0DAD" />
+        </RelativeLayout>
+
+        <!-- Password Layout -->
+        <RelativeLayout
+            android:id="@+id/password_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/username_layout"
+            android:padding="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_margin="10dp"
+            android:background="#E6E6FA"
+            android:elevation="2dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="Password"
+                android:textColor="#6A0DAD"
+                style="@style/size14Text_DavysGray_bold" />
+
+            <TextView
+                android:id="@+id/user_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="90dp"
+                android:text="Password Placeholder"
+                android:textColor="#9966CC"
+                android:layout_marginTop="-10dp"
+                style="@style/size12Text_DavysGray"
+                android:layout_centerVertical="true" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/user_password"
+                android:layout_marginTop="10dp"
+                android:background="#6A0DAD" />
+        </RelativeLayout>
+
+        <!-- Sign Out Button Layout -->
+        <RelativeLayout
+            android:id="@+id/user_signout_layout"
+            android:layout_width="150sp"
+            android:layout_height="60sp"
+            android:layout_marginLeft="110sp"
+            android:layout_marginRight="110sp"
+            android:layout_marginBottom="20sp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/rectangle_msblue"
+            android:clickable="true"
+            android:focusable="true">
+
+            <TextView
+                style="@style/size14Text_DavysGray_bold"
                 android:layout_width="60sp"
-                android:layout_height="60sp"
-                android:src="@drawable/ic_exit" />
-    </RelativeLayout>
-</RelativeLayout>
-</RelativeLayout>
+                android:layout_height="40sp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="30sp"
+                android:gravity="center_vertical"
+                android:text="Sign out"
+                android:textColor="#B0B0B0"/>
+
+            <RelativeLayout
+                android:id="@+id/exit"
+                android:layout_width="50sp"
+                android:layout_height="50sp"
+                android:layout_marginStart="80sp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10sp"
+                android:padding="10sp">
+
+                <ImageView
+                    android:layout_width="60sp"
+                    android:layout_height="60sp"
+                    android:src="@drawable/ic_exit" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+    </RelativeLayout> <!-- End of fragment_container -->
 </RelativeLayout>
