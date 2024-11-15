@@ -30,4 +30,7 @@ public class InventoryViewModel extends ViewModel {
     }
 
 
+    public void clearItems() {
+        items.setValue(new ArrayList<>());
+    }
 }

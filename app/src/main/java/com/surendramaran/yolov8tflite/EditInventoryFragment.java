@@ -31,16 +31,12 @@ public class EditInventoryFragment extends Fragment {
     private List<Item> itemList;
     private InventoryViewModel viewModel;
 
-    // Firebase Database reference
-    private DatabaseReference databaseRef;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: Fragment created");
         View view = inflater.inflate(R.layout.fragment_edit_inventory, container, false);
-
-        // Initialize Firebase Database reference
-        databaseRef = FirebaseDatabase.getInstance().getReference("meds");
 
         itemContainer = view.findViewById(R.id.item_container);
         completePreviewButton = view.findViewById(R.id.completePreviewButton);
@@ -61,8 +57,6 @@ public class EditInventoryFragment extends Fragment {
                 addItemView(detectedItem);
                 viewModel.addItem(detectedItem);
 
-                // Write the detected item to Firebase
-                writeItemToFirebase(detectedItem);
             } else {
                 Log.e(TAG, "Quantity or expiry is null or empty in arguments");
             }
@@ -73,7 +67,6 @@ public class EditInventoryFragment extends Fragment {
         // Observe the items in the ViewModel
         viewModel.getItems().observe(getViewLifecycleOwner(), items -> {
             Log.d(TAG, "Observing items from ViewModel. Items received: " + (items != null ? items.size() : "null"));
-            itemList.clear();
             itemContainer.removeAllViews();
 
             if (items != null && !items.isEmpty()) {
@@ -89,14 +82,16 @@ public class EditInventoryFragment extends Fragment {
             }
         });
 
-        // Set up button click listener
         completePreviewButton.setOnClickListener(v -> {
-            Log.d(TAG, "Save button clicked");
+            // Add items to ViewModel before navigating
             for (Item item : itemList) {
                 viewModel.addItem(item);
-                writeItemToFirebase(item); // Save each item to Firebase
+
+                Log.d(TAG, "Save button clicked");
             }
             navigateToDashboardFragment();
+
+
         });
 
         // Call the updateUIForFragment method from MainActivity
@@ -106,7 +101,6 @@ public class EditInventoryFragment extends Fragment {
                     R.drawable.ic_home_grayo, "#4D4D4D",
                     R.drawable.ic_profile_grayo, "#4D4D4D");
         }
-
         return view;
     }
 
@@ -129,7 +123,10 @@ public class EditInventoryFragment extends Fragment {
         } else {
             Log.e(TAG, "Fragment is not added, cannot navigate to DashboardFragment");
         }
+        // Clear the items in the ViewModel in EditInventoryFragment
+        viewModel.clearItems();
     }
+
 
     void addItemView(Item item) {
         View itemView = LayoutInflater.from(getContext()).inflate(R.layout.item_layout, itemContainer, false);
@@ -186,19 +183,8 @@ public class EditInventoryFragment extends Fragment {
                 .show();
     }
 
-    // Function to write an item to Firebase
-    private void writeItemToFirebase(Item item) {
-        String key = databaseRef.push().getKey();
-        if (key != null) {
-            databaseRef.child(key).setValue(item)
-                    .addOnSuccessListener(aVoid ->
-                            Toast.makeText(getContext(), "Item saved to Firebase", Toast.LENGTH_SHORT).show())
-                    .addOnFailureListener(e ->
-                            Toast.makeText(getContext(), "Failed to save item to Firebase", Toast.LENGTH_SHORT).show());
-        } else {
-            Log.e(TAG, "Failed to get Firebase key");
-        }
-    }
+
+
 
     // Data class for an Item
     public static class Item implements Parcelable {

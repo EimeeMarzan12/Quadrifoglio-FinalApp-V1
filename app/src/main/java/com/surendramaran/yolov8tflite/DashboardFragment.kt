@@ -1,5 +1,6 @@
 package com.surendramaran.yolov8tflite
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,12 +14,15 @@ import com.google.firebase.database.*
 import com.surendramaran.yolov8tflite.EditInventoryFragment.Item
 import android.graphics.Color
 import android.text.format.DateUtils
+import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.*
 
 class DashboardFragment : Fragment() {
     private lateinit var viewModel: InventoryViewModel
     private lateinit var itemContainer: LinearLayout
+    private lateinit var databaseRef: DatabaseReference
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,8 +31,10 @@ class DashboardFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_dashboard, container, false)
 
         itemContainer = view.findViewById(R.id.item_container)
-
+        // Initialize Firebase Database reference
+        databaseRef = FirebaseDatabase.getInstance().getReference("meds")
         viewModel = ViewModelProvider(requireActivity()).get(InventoryViewModel::class.java)
+
 
         // Observe the items LiveData
         viewModel.getItems().observe(viewLifecycleOwner) { items ->
@@ -42,6 +48,20 @@ class DashboardFragment : Fragment() {
 
         // Load meds data from Firebase
         loadMedsFromFirebase()
+
+        arguments?.getParcelableArrayList<Item>("itemList")?.let { receivedItemList ->
+            if (receivedItemList.isNotEmpty()) {
+                for (item in receivedItemList) {
+                    writeItemToFirebase(item)
+                    Log.d(TAG, "Received item: ${item.name}")
+                }
+            } else {
+                Log.e(TAG, "Received itemList is empty")
+            }
+        } ?: run {
+            Log.e(TAG, "No arguments received in DashboardFragment")
+        }
+
 
         return view
     }
@@ -121,6 +141,22 @@ class DashboardFragment : Fragment() {
                 Toast.makeText(requireContext(), "Failed to load data", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    // Function to write an item to Firebase in DashboardFragment
+    private fun writeItemToFirebase(item: Item) {
+        val key = databaseRef.push().key
+        if (key != null) {
+            databaseRef.child(key).setValue(item)
+                .addOnSuccessListener {
+                    Toast.makeText(context, "Item saved to Firebase", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(context, "Failed to save item to Firebase", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            Log.e(TAG, "Failed to get Firebase key")
+        }
     }
 
     private fun parseExpiryDate(expiry: String): Long {
