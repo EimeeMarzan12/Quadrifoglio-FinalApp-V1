@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "758385876590",
+    "firebase_url": "https://admin-website-39ecd-default-rtdb.firebaseio.com",
+    "project_id": "admin-website-39ecd",
+    "storage_bucket": "admin-website-39ecd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:758385876590:android:999c24899d7899d5ae507f",
+        "android_client_info": {
+          "package_name": "com.surendramaran.yolov8tflite"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2ccTALeVQA8nT1MptGBb6jocPF0iVA8k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
